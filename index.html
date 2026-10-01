@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="author" content="Lauren Hernandez"><title>Simulador Logístico Casa Verde 3D</title>
 <style>
 :root{--o:#222f3e;--a:#2980b9;--e:#27ae60;--p:#c0392b;--y:#f1c40f}
@@ -45,11 +45,13 @@ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;text-alig
 #tc button{position:absolute;width:58px;height:58px;padding:0;margin:0;border-radius:50%;background:rgba(34,47,62,.75);border:2px solid rgba(255,255,255,.35);font-size:22px;pointer-events:auto;touch-action:none}
 #tc button:active{background:var(--a)}#tc .ac{left:14px;bottom:70px;width:86px;border-radius:29px;font-size:14px;background:rgba(39,174,96,.8)}
 .mv #info{bottom:auto;top:92px;width:min(240px,48vw)}
+*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.fs{padding:8px 16px;margin:4px 0 0;background:#34495e;font-size:14px}#tc #fsb{top:56px;right:10px;width:40px;height:40px;font-size:18px}
 </style></head><body>
 <div id="c"></div>
 <div id="hud"><div id="top"><span id="ph"></span><span id="lv"></span><span id="co"></span></div><div id="hint"></div><div id="bars"></div><div id="pn"></div><div id="info"></div>
 <div id="tl"></div>
-<div id="tc"><button data-k="ArrowUp" style="right:70px;bottom:174px">▲</button><button data-k="ArrowLeft" style="right:128px;bottom:115px">◀</button><button data-k="ArrowRight" style="right:12px;bottom:115px">▶</button><button data-k="ArrowDown" style="right:70px;bottom:56px">▼</button><button data-k="Space" class="ac">ACCIÓN</button></div></div>
+<div id="tc"><button data-k="ArrowUp" style="right:70px;bottom:174px">▲</button><button data-k="ArrowLeft" style="right:128px;bottom:115px">◀</button><button data-k="ArrowRight" style="right:12px;bottom:115px">▶</button><button data-k="ArrowDown" style="right:70px;bottom:56px">▼</button><button data-k="Space" class="ac">ACCIÓN</button><button id="fsb" onclick="pantalla()">⛶</button></div></div>
 <div id="fl"></div><div id="ov"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -186,7 +188,11 @@ let MOVIL=matchMedia('(pointer:coarse)').matches?1:0;
 const CTL=m=>m?'Botones en pantalla para moverte · ACCIÓN para las acciones · Toca para inspeccionar · Mejor con el celular en horizontal':'Flechas o WASD para moverte · Espacio para acciones · Clic para inspeccionar';
 function dispositivo(m){MOVIL=m;document.body.classList.toggle('mv',!!m);document.querySelectorAll('.dv').forEach((b,i)=>b.classList.toggle('on',i==m));const c=$('ctl');if(c)c.textContent=CTL(m)}
 document.body.classList.toggle('mv',!!MOVIL);
-document.querySelectorAll('#tc button').forEach(b=>{const k=b.dataset.k,on=e=>{e.preventDefault();if(k=='Space'){SP=1;if(st=='LOSE')menu()}else K[k]=1},off=()=>{if(k!='Space')K[k]=0};
+['contextmenu','selectstart','dragstart'].forEach(t=>addEventListener(t,e=>e.preventDefault()));
+function pantalla(){const d=document,e=d.documentElement;if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d);return}
+ const f=e.requestFullscreen||e.webkitRequestFullscreen;if(!f){alert('Tu navegador no permite pantalla completa. En iPhone: Compartir > Añadir a pantalla de inicio.');return}
+ Promise.resolve(f.call(e)).then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(x){}}).catch(()=>{})}
+document.querySelectorAll('#tc button[data-k]').forEach(b=>{const k=b.dataset.k,on=e=>{e.preventDefault();if(k=='Space'){SP=1;if(st=='LOSE')menu()}else K[k]=1},off=()=>{if(k!='Space')K[k]=0};
  b.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(t=>b.addEventListener(t,off))});
 // ---------- flujo ----------
 function menu(){st='MENU';etapa=0;vidas=3;$('hud').style.display='none';sc=escena(0xf2a65a,260);
@@ -198,7 +204,7 @@ function menu(){st='MENU';etapa=0;vidas=3;$('hud').style.display='none';sc=escen
  for(let i=0;i<6;i++){const s=saco();s.position.set(-22+(i%3)*1.4,1.5,2+(i>>1)*1.1);sc.add(s)}
  let t=0;upd=dt=>{t+=dt;for(let i=0;i<P.count;i++)P.setZ(i,Math.sin(P.getX(i)*.2+t)*.5+Math.cos(P.getY(i)*.25+t*.8)*.4);P.needsUpdate=true;
   sh.position.set(8+Math.sin(t*.2)*3,.2+Math.sin(t*1.4)*.25,-4);sh.rotation.z=Math.sin(t)*.03;cam_(Math.sin(t*.15)*18,7,24+Math.cos(t*.15)*3,0,3,-4)};upd(0);snap();
- ov(`<div class=hero><div class=badge>☕ Café de Colombia → el mundo</div><h1 class=big>Casa Verde</h1><h2>Simulador logístico de exportación</h2><p>Carga, conduce, tramita y navega: lleva tu café por las 9 etapas de la cadena de suministro global.</p><div style="margin-top:14px"><button class="dv${MOVIL?'':' on'}" onclick="dispositivo(0)">💻 PC</button><button class="dv${MOVIL?' on':''}" onclick="dispositivo(1)">📱 Celular</button></div><button class=go onclick="elegir()">Iniciar viaje</button><p class=ctl id=ctl>${CTL(MOVIL)}</p><div class=cred>Creado por <b>Lauren Hernandez</b></div></div>`)}
+ ov(`<div class=hero><div class=badge>☕ Café de Colombia → el mundo</div><h1 class=big>Casa Verde</h1><h2>Simulador logístico de exportación</h2><p>Carga, conduce, tramita y navega: lleva tu café por las 9 etapas de la cadena de suministro global.</p><div style="margin-top:14px"><button class="dv${MOVIL?'':' on'}" onclick="dispositivo(0)">💻 PC</button><button class="dv${MOVIL?' on':''}" onclick="dispositivo(1)">📱 Celular</button><button class=fs onclick="pantalla()">⛶ Pantalla completa</button></div><button class=go onclick="elegir()">Iniciar viaje</button><p class=ctl id=ctl>${CTL(MOVIL)}</p><div class=cred>Creado por <b>Lauren Hernandez</b></div></div>`)}
 function iniciar(){infoE=-1;sfx('click');qs=BANCO.slice().sort(()=>Math.random()-.5);DUPS.forEach(([a,b])=>qs.splice(Math.max(qs.indexOf(BANCO[a]),qs.indexOf(BANCO[b])),1));{const a=incoQ(),b=incoQ(a);qs.splice(0,2,a,b)}qi=0;bono=0;etapa=0;vidas=3;perdidas=0;perdidasV=0;aciertos=0;preg=0;t0=performance.now();cargar()}
 let R=[[104.5,85],[104.5,79.6],[106,72],[104,66],[99.8,64.2],[101,59],[104,53],[106,49.3]],PI=[0,0,1,1,1,4,4,7,7],
 LAND=["12,24 23,19 39,20 55,20 70,22 85,22 92,26 86,31 95,35 101,38 103,32 102,28 110,29 115,30 119,34 124,38 120,43 114,45 110,47 106,49.5 104,53 104,55 99,59 100,64 98,63 96,60 91,60 86,60.5 83,64 82.5,68 85,71 89,71 90,69 93,68.5 92,74 96,74.5 97,79 100,81 97,81.5 94,78 89,76 84,74 75,70 71,64 67,59 63,57.5 59,55 56,50 56,43 52,39 47,34 40,30 32,30 28,32 22,33 17,35 20,31 15,28",
