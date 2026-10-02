@@ -191,7 +191,7 @@ const INFO=["Aquí se alista y empaca el café. Un buen empaque y conteo evitan 
 let infoE=-1,infoT=0;
 function info(){const e=$('info');if(infoE!=etapa){infoE=etapa;e.className='';clearTimeout(infoT);infoT=setTimeout(()=>e.className='min',9000)}
  e.innerHTML=`<b>ℹ️ ${ETAPAS[etapa]}</b><p>${INFO[etapa]}</p>`;e.onclick=()=>{clearTimeout(infoT);e.className=e.className=='min'?'':'min'}}
-function hudTop(){$('ph').textContent=`Fase ${etapa+1}: ${ETAPAS[etapa]}`;$('lv').textContent='Vidas: '+'❤️'.repeat(Math.max(0,vidas));$('co').textContent=`Costo: $${costo()} USD`;
+function hudTop(){$('ph').textContent=`Fase ${etapa+1}: ${ETAPAS[etapa]}`;$('lv').textContent=PAIS===PAISES[0]?'🎓 Modo tutorial · vidas ilimitadas':'Vidas: '+'❤️'.repeat(Math.max(0,vidas));$('co').textContent=`Costo: $${costo()} USD`;
  [...$('tl').children].forEach((b,i)=>b.className=i<etapa?'d':i==etapa?'n':'')}
 let nxOk=0;function nxt(t){if(nxOk)return;nxOk=1;const b=document.createElement('button');b.textContent=t;b.onclick=()=>{sfx('click');avanzar()};($('nx')||$('pn')).appendChild(b)}
 function flash(){const f=$('fl');f.style.transition='none';f.style.opacity=.5;requestAnimationFrame(()=>{f.style.transition='opacity .5s';f.style.opacity=0})}
@@ -228,7 +228,7 @@ const CAFES=[
  ()=>{const r=[0,0,.004,.02,.05][Math.floor(rnd(0,5))],o=r<=.01;return[`Residuos de plaguicidas: ${r} mg/kg · máx. 0,01 mg/kg`,o,o?`${r} mg/kg está dentro del límite de 0,01 mg/kg.`:`${r} mg/kg supera 0,01 mg/kg: sugiere plaguicidas no permitidos en producción orgánica.`]}]}];
 let CAF=CAFES[0],PAIS=PAISES[0],DIF=PAISES[0].d;
 const costoPais=p=>COSTOS_BASE.reduce((a,c,i)=>a+Math.round(c*p.k[i]/10)*10,0);
-function elegir(){st='MENU';ov(`<div class=card style="max-width:860px"><h1>ELIGE TU MERCADO DE DESTINO</h1><p>Cada país cambia los costos de flete, la ruta y la dificultad de las fases.</p><div class=pg>${PAISES.map((p,i)=>`<button class=pais onclick="pick(${i})"><span class=fl>${p.e}</span><b>${p.n}</b><small>Destino final: ${p.ciudad}</small><small>Dificultad: ${'★'.repeat(p.s)}${'☆'.repeat(5-p.s)} ${p.dn}</small><small>Costo total de la ruta: $${costoPais(p)} USD</small></button>`).join('')}</div><button class=opt style="text-align:center" onclick="guia()">📘 Guía de Incoterms 2020</button><button class=opt style="text-align:center" onclick="menu()">Volver al menú</button></div>`)}
+function elegir(){st='MENU';ov(`<div class=card style="max-width:860px"><h1>ELIGE TU MERCADO DE DESTINO</h1><p>Cada país cambia los costos de flete, la ruta y la dificultad de las fases.</p><div class=pg>${PAISES.map((p,i)=>`<button class=pais onclick="pick(${i})"><span class=fl>${p.e}</span><b>${p.n}</b><small>Destino final: ${p.ciudad}</small>${i==0?'<small>🎓 Modo tutorial: sin límite de vidas</small>':''}<small>Dificultad: ${'★'.repeat(p.s)}${'☆'.repeat(5-p.s)} ${p.dn}</small><small>Costo total de la ruta: $${costoPais(p)} USD</small></button>`).join('')}</div><button class=opt style="text-align:center" onclick="guia()">📘 Guía de Incoterms 2020</button><button class=opt style="text-align:center" onclick="menu()">Volver al menú</button></div>`)}
 // ---------- INCOTERMS 2020 ----------
 // pay = última etapa que paga el vendedor · rk = etapa desde la que el riesgo es del comprador · x = costo extra
 const INCO=[
@@ -296,7 +296,7 @@ function cargarMapa(){st='LOAD';$('hud').style.display='none';const pv=PI[Math.m
 function empezar(){ov('');st='PLAY';$('hud').style.display='block';initEtapa()}
 function initEtapa(){ENG=0;$('spd').style.display='none';document.body.classList.toggle('nk',etapa==2||etapa==7);clickH=null;SP=0;hold=-1;nxOk=0;$('pn').innerHTML='';bars([]);upd=STAGES[etapa]();hudTop();info();snap()}
 function avanzar(){etapa++;if(etapa>=9)return victoria();if([2,4,6,8].includes(etapa)&&qi<qs.length)quiz();else cargar()}
-function perder(){if(st!='PLAY')return;sfx('choque');chispas();ENG=0;if([1,6,8].includes(etapa))setTimeout(()=>sfx('bocina'),120);vidas--;perdidas++;if(etapa<INCO[CI].rk)perdidasV++;shake=.9;flash();upd=()=>{};clickH=null;hudTop();
+function perder(){if(st!='PLAY')return;sfx('choque');chispas();ENG=0;if([1,6,8].includes(etapa))setTimeout(()=>sfx('bocina'),120);if(PAIS!==PAISES[0])vidas--;perdidas++;if(etapa<INCO[CI].rk)perdidasV++;shake=.9;flash();upd=()=>{};clickH=null;hudTop();
  if(vidas<=0)setTimeout(()=>{st='LOSE';$('hud').style.display='none';ov(`<div class=card style="border-color:#c0392b"><h1 style="color:#e74c3c">OPERACIÓN LOGÍSTICA FALLIDA</h1><p>Te quedaste sin vidas.</p><button onclick="menu()">PRESIONA ESPACIO O AQUÍ PARA REINICIAR</button></div>`)},500);
  else setTimeout(()=>{if(st=='PLAY')initEtapa()},500)}
 function quiz(){st='QUIZ';$('hud').style.display='none';const q=qs[qi];
