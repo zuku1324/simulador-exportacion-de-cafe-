@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="author" content="Lauren Hernandez"><title>Simulador Logístico Casa Verde </title>
+<meta name="author" content="Lauren Hernandez"><title>Casa Verde · Simulador Logístico de Exportación</title><meta name="theme-color" content="#222f3e"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23222f3e'/%3E%3Ctext x='50' y='72' font-size='64' text-anchor='middle'%3E%E2%98%95%3C/text%3E%3C/svg%3E">
 <style>
 :root{--o:#222f3e;--a:#2980b9;--e:#27ae60;--p:#c0392b;--y:#f1c40f}
 *{box-sizing:border-box;margin:0}
@@ -60,13 +61,59 @@ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;text-alig
 .flag{position:absolute;right:8px;top:6px;z-index:2;font-size:18px;cursor:pointer}
 .ins{font-size:13px;padding:6px 10px;margin:2px 4px 0 0;border-radius:8px}
 #pn{max-height:76vh;overflow-y:auto}
+#carga{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#0f1923;text-align:center;padding:20px;transition:opacity .4s}
+#carga .sp{width:44px;height:44px;border:5px solid #34495e;border-top-color:var(--y);border-radius:50%;animation:gir 1s linear infinite}@keyframes gir{to{transform:rotate(360deg)}}
+#pausa{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(15,25,35,.82);text-align:center;padding:16px}
+.pais,.opt{transition:transform .15s,box-shadow .15s,border-color .15s}
+@media (hover:hover){.pais:not(:disabled):hover,.opt:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.4)}.go:hover{transform:translateY(-2px)}}
+.go:active{transform:translateY(3px);box-shadow:0 2px 0 #1b7a43}.pais:disabled:hover{filter:none;border-color:var(--o)}button:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+h1,.big,.hero h2,#cap,.go,.pais b,#ph{font-family:'Fredoka','Trebuchet MS','Segoe UI',sans-serif}
+.lento{opacity:0;color:#95a5a6;font-size:13px;animation:fi2 .4s 6s forwards}@keyframes fi2{to{opacity:1}}
+@keyframes fi{from{opacity:0}}@keyframes cin{from{opacity:0;transform:translateY(10px) scale(.98)}}
+#ov,#pausa{animation:fi .18s ease-out}.card,.hero{animation:cin .2s ease-out}
+.dv,.fs,.ins,.mtb{transition:transform .15s,filter .15s,border-color .15s,box-shadow .15s}
+@media (hover:hover){.dv:hover,.fs:hover,.ins:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.35)}.doc:hover{border-color:var(--y)}.pais:not(:disabled):hover,.opt:hover{border-color:var(--y);filter:brightness(1.15)}}
+#tl b:before,.jr b:before{content:"";position:absolute;top:0;left:50%;margin-left:-6px;width:12px;height:12px;border-radius:50%;background:#95a5a6;z-index:1}
+#tl b:after,.jr b:after{content:"";position:absolute;top:5px;left:50%;width:100%;height:2px;background:#566573}
+#tl b:last-child:after,.jr b:last-child:after{display:none}
+#tl b.d:after,.jr b.d:after{background:var(--e)}#tl b.d:before,.jr b.d:before{background:var(--e)}
+#tl b.n:before,.jr b.n:before{background:var(--y);animation:pl 1.2s infinite}@keyframes pl{50%{box-shadow:0 0 0 6px rgba(241,196,15,.3)}}
+.jr{display:flex;margin:12px 0 4px}.jr b{flex:1;text-align:center;font-size:10px;color:#95a5a6;position:relative;padding-top:17px}.jr b.d,.jr b.n{color:#fff}
+@media (max-width:700px){.jr b{font-size:7px}}
+.inc{display:inline-block;background:var(--y);color:#222f3e;font-weight:800;font-size:12px;padding:1px 9px;border-radius:10px;margin:2px 0}
+.sello{display:inline-block;margin-top:6px;padding:2px 10px;background:#fff;border:2px solid;border-radius:6px;font-style:normal;font-weight:800;font-size:12px;letter-spacing:1px;transform:rotate(-3deg)}.sello.ok{color:#1e8449}.sello.er{color:#c0392b}
+.chk{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle,rgba(46,204,113,.45),rgba(46,204,113,0) 65%);animation:chk 1.1s forwards}
+.chk div{font-size:clamp(90px,22vw,200px);line-height:1;color:#fff;text-shadow:0 0 40px #2ecc71,0 6px 0 #1e8449;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}.chk small{font-size:20px;font-weight:700;text-shadow:0 2px 6px #000}
+@keyframes chk{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}@keyframes pop{from{transform:scale(.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){#ov,#pausa,.card,.hero,.chk,.chk div{animation:none}}
+#pn.dg{left:50%;right:auto;top:56%;transform:translate(-50%,-50%);width:min(1000px,96vw);display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-height:76vh;overflow-y:auto;z-index:3}
+#pn.dg .doc{padding:12px 14px;font-size:16px;touch-action:manipulation}
+#pn.dg .doc small{font-size:14px!important;line-height:1.55!important}
+#pn.dg .inc{font-size:14px}#pn.dg .sello{font-size:13px}
+#pn.dg .ct{grid-column:1/-1;background:rgba(34,47,62,.95);border:2px solid var(--y);border-radius:10px;padding:8px 12px;font-size:15px;font-weight:700;text-align:center}
+#pn.dg #nx{grid-column:1/-1;text-align:center}
+@media (max-width:700px){#pn.dg{grid-template-columns:1fr 1fr}}
+@media (max-height:500px){#pn.dg{gap:5px;max-height:78vh}#pn.dg .doc{padding:6px 8px;font-size:12px}#pn.dg .doc small{font-size:11px!important;line-height:1.35!important}#pn.dg .ct{font-size:12px;padding:4px 8px}}
+#pn.dg{top:auto;bottom:46px;transform:translateX(-50%);max-height:52vh}
+#pn.dg .doc{background:rgba(34,47,62,.74);backdrop-filter:blur(5px)}#pn.dg .doc i{opacity:.55}
+#pn.ghost .doc{opacity:.06;pointer-events:none}
+@media (max-height:500px){#pn.dg{max-height:70vh;bottom:40px}}
+#pn.dg{left:0;right:0;margin:0 auto;transform:none}
+#pn.dg #nx{position:fixed;right:18px;left:auto;top:38%;grid-column:auto;z-index:4}
+#pn.dg #nx button{margin:0;max-width:210px;font-size:18px;padding:16px 22px;box-shadow:0 0 0 0 rgba(46,204,113,.7);animation:pls 1.4s infinite}
+@keyframes pls{70%{box-shadow:0 0 0 14px rgba(46,204,113,0)}}
+@media (max-height:500px),(max-width:700px){#pn.dg #nx{right:8px;top:30%}#pn.dg #nx button{font-size:14px;padding:10px 14px;max-width:150px}}
+.rp{background:#34495e;border-radius:8px;padding:8px 12px;margin:6px 0;font-size:13px;text-align:left}.rp b{color:#f1c40f}.rp p{margin:4px 0 0;font-weight:400}.card h2{font-size:15px;margin:12px 0 4px;color:#fff;text-align:left}
 </style></head><body>
 <div id="c"></div>
-<div id="hud"><div id="top"><span id="ph"></span><span id="lv"></span><span id="co"></span><button class="mtb" onclick="mute()">🔊</button></div><div id="hint"></div><div id="bars"></div><div id="pn"></div><div id="info"></div><div id="spd"></div>
+<div id="hud"><div id="top"><span id="ph"></span><span id="lv"></span><span id="co"></span><span><button style="padding:2px 10px;margin:0 6px 0 0;font-size:16px;background:rgba(0,0,0,.35)" onclick="pausa()" title="Pausa (P)">⏸</button><button class="mtb" onclick="mute()">🔊</button></span></div><div id="hint"></div><div id="bars"></div><div id="pn"></div><div id="info"></div><div id="spd"></div>
 <div id="tl"></div>
 <div id="tc"><button data-k="ArrowUp" style="right:70px;bottom:174px">▲</button><button data-k="ArrowLeft" style="right:128px;bottom:115px">◀</button><button data-k="ArrowRight" style="right:12px;bottom:115px">▶</button><button data-k="ArrowDown" style="right:70px;bottom:56px">▼</button><button data-k="Space" class="ac">ACCIÓN</button><button id="fsb" onclick="pantalla()">⛶</button></div></div>
 <div id="fl"></div><div id="lb1" class="lb"></div><div id="lb2" class="lb"></div><div id="cap"></div><div id="fd"></div><div id="rot">🔄 Gira el celular en horizontal para jugar mejor</div><div id="ov"></div>
+<div id="carga"><div style="font-size:48px">☕</div><b style="font-size:24px">Casa Verde</b><div class="sp"></div><span style="color:#95a5a6">Cargando Casa Verde…</span><small class="lento">¿Tarda mucho? Revisa tu conexión a internet.</small></div>
+<div id="pausa"><div class="card" style="max-width:380px"><h1>⏸ PAUSA</h1><p id="pinfo">El juego está detenido.</p><button class="go" onclick="pausa()">Reanudar (P)</button><button class="opt" style="text-align:center" onclick="salirPausa()">Salir al menú</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>if(!window.THREE){document.getElementById('carga').innerHTML='<div style="font-size:42px">⚠️</div><b style="font-size:20px">No se pudo cargar el motor 3D</b><span style="max-width:420px;color:#bdc3c7">El juego necesita internet para descargar Three.js. Revisa tu conexión y recarga la página.</span><button onclick="location.reload()">Reintentar</button>'}</script>
 <script>
 const T=THREE,$=i=>document.getElementById(i),rnd=(a,b)=>a+Math.random()*(b-a);
 const ETAPAS=["Bodega (Col)","Transp. Nac (Col)","Docs","Aduana Or.","Marítimo","Puerto Int.","Transp. Int.","Aduana Dest.","Cliente Final"];
@@ -84,6 +131,53 @@ const BANCO=[
 {p:"¿Cuál de los siguientes factores debe considerar la startup al elegir su modo de entrada al mercado estadounidense?",o:["A. El color del logotipo.","B. La inversión, el nivel de control y los riesgos de la operación.","C. Únicamente el tamaño de la oficina en Colombia.","D. La cantidad de competidores sin analizar costos."],c:1}];
 // pares de preguntas parecidas (índices en BANCO): no salen las dos en la misma partida
 const DUPS=[[0,4],[1,5]];
+// La primera opción de cada pregunta nueva es la correcta: mezcla() reordena y rotula A-D en cada partida
+const Q=(p,a,b,c,d,e)=>({p,o:[a,b,c,d],c:0,e});
+BANCO.push(
+Q('¿Qué documento prueba el contrato de transporte marítimo y acredita la propiedad de la carga?','Conocimiento de embarque (B/L)','Lista de empaque','Certificado de origen','Registro de exportador','El B/L es recibo de la mercancía, prueba del contrato de transporte y título de propiedad.'),
+Q('¿Qué documento detalla el contenido, los bultos y el peso de cada embalaje?','Lista de empaque','Certificado de origen','Póliza de seguro','Declaración de exportación','La lista de empaque (packing list) permite a la aduana cotejar lo declarado con lo cargado.'),
+Q('¿Qué certificado garantiza que el café está libre de plagas para ingresar a otro país?','Certificado fitosanitario','Certificado de origen','Factura comercial','Manifiesto de carga','Lo expide la autoridad sanitaria del país exportador (en Colombia, el ICA).'),
+Q('¿Cuál es el documento con el que el vendedor cobra la venta al comprador?','Factura comercial','Lista de empaque','Declaración de exportación','Manifiesto de carga','La factura comercial indica precio, cantidad, Incoterm y condiciones de pago.'),
+Q('¿Para qué sirve la declaración de exportación en Colombia?','Presentar la mercancía ante la DIAN para autorizar su salida','Asegurar la carga','Certificar el origen del café','Pagar el flete internacional','Con la declaración y el levante, la DIAN autoriza que la mercancía salga del país.'),
+Q('¿Qué es el manifiesto de carga?','Relación de toda la carga que transporta una nave, presentada a la aduana','La factura del comprador','El seguro del contenedor','El certificado fitosanitario','Lo presenta el transportista y permite a la aduana controlar lo que entra y sale.'),
+Q('¿Para qué sirve el certificado de origen?','Acceder a aranceles preferenciales de acuerdos comerciales','Pagar menos flete','Evitar la inspección sanitaria','Cambiar el Incoterm pactado','Demuestra dónde se produjo el café y permite aplicar preferencias como las del TLC con EE. UU.'),
+Q('¿Qué tipo de contenedor se usa normalmente para café verde en sacos?','Contenedor seco (dry) con forro o desecantes','Contenedor refrigerado a -18 °C','Contenedor tanque','Plataforma abierta sin techo','El forro y los desecantes controlan la humedad durante la travesía.'),
+Q('¿Qué es el «sudor del contenedor»?','Condensación que moja el café y favorece el moho','Una fuga de combustible','Un cobro del puerto','Un tipo de precinto','Los cambios de temperatura en la ruta condensan humedad dentro del contenedor.'),
+Q('¿Para qué sirve el precinto de seguridad del contenedor?','Evidenciar si fue abierto durante el trayecto','Mantener la temperatura','Medir el peso','Pagar aranceles','Si llega roto o con otro número, la carga puede ser retenida e investigada.'),
+Q('¿Qué significa la sigla TEU?','Unidad equivalente a un contenedor de 20 pies','Tarifa especial de uso','Terminal de exportación única','Tipo de seguro marítimo','Un contenedor de 40 pies equivale a 2 TEU.'),
+Q('¿Qué es el flete?','El precio por transportar la mercancía','El impuesto de importación','El seguro de la carga','El costo del empaque','Se paga a la naviera, aerolínea o transportista según el medio.'),
+Q('¿Qué son las demoras (demurrage) en un puerto?','Cobro de la naviera por dejar el contenedor más tiempo del permitido','Un retraso del barco','Una multa aduanera','Un tipo de seguro','Por eso conviene tener los documentos listos antes de que llegue la carga.'),
+Q('¿Cuál es la función de un agente de aduanas?','Tramitar la declaración y los trámites ante la aduana','Conducir el buque','Inspeccionar el café del cliente','Emitir el seguro','Es un profesional autorizado que representa al exportador o importador ante la aduana.'),
+Q('¿Qué cubre un seguro de transporte de carga?','Pérdida o daño de la mercancía durante el trayecto','Caídas del precio del café','Los impuestos de importación','Multas por documentos mal diligenciados','Cubre el riesgo físico de la carga mientras viaja.'),
+Q('¿Qué Incoterms obligan al vendedor a contratar el seguro de la carga?','CIF y CIP','FOB y FCA','EXW y FAS','DAP y DPU','En CIF y CIP el vendedor paga flete y también contrata el seguro.'),
+Q('En un contrato FOB, ¿quién debería asegurar la carga durante el viaje marítimo?','El comprador, porque el riesgo ya es suyo','El vendedor siempre','La aduana','La naviera sin costo','En FOB el riesgo pasa al comprador cuando la mercancía está a bordo del buque.'),
+Q('¿Qué es un arancel?','Impuesto que cobra un país a las mercancías importadas','Tarifa de flete','Multa por retraso','Tipo de seguro','Puede variar según la partida arancelaria y los acuerdos comerciales.'),
+Q('¿Qué es la partida arancelaria?','Código que clasifica la mercancía para definir aranceles y requisitos','El número del contenedor','El código del buque','El número de factura','El café verde sin descafeinar se clasifica en la partida 0901.11 del Sistema Armonizado.'),
+Q('¿Qué significa el carril verde en la aduana?','La carga pasa sin inspección física por bajo riesgo','Se revisa todo el contenedor','Se debe pagar por adelantado','La carga es rechazada','La aduana usa análisis de riesgo para decidir qué cargas inspecciona.'),
+Q('¿Qué es el levante de una mercancía?','La autorización de la aduana para disponer de ella','El izado con grúa','El pago del flete','El certificado fitosanitario','Sin levante la mercancía no puede salir ni retirarse del puerto.'),
+Q('Si los datos de la factura no coinciden con la carga real, ¿qué puede pasar?','La aduana puede retener la carga, multar o exigir corrección','Nada, es un error menor','Baja el arancel','Cambia el Incoterm automáticamente','Las inconsistencias son una causa común de retenciones.'),
+Q('¿Por qué se controla la humedad del café verde?','Con exceso de humedad aparece moho y se pierde calidad','Porque aumenta el aroma','Porque cambia el color del saco','Porque reduce el arancel','El café verde suele exportarse entre 10 y 12 % de humedad.'),
+Q('¿Qué es la trazabilidad de un lote de café?','Poder seguir su origen y recorrido','La velocidad del transporte','El precio por saco','El tipo de contenedor','Permite identificar a qué finca y proceso pertenece cada lote.'),
+Q('¿Cuántos puntos de catación mínimos se exigen en la escala SCA para ser café especial?','80 puntos','60 puntos','70 puntos','95 puntos','La escala SCA va de 0 a 100; desde 80 se considera café especial.'),
+Q('¿Qué es la ocratoxina A?','Toxina producida por hongos en café mal secado o almacenado','Un plaguicida','Un tipo de empaque','Un certificado orgánico','Por eso los países fijan límites de humedad y de contaminantes.'),
+Q('¿Cuánto pesa un saco de café verde para exportación en Colombia?','70 kg','25 kg','50 kg','100 kg','El estándar internacional es de 60 kg, pero en Colombia se exporta en sacos de 70 kg.'),
+Q('¿Qué garantiza una certificación orgánica en el café?','Que se produjo sin plaguicidas ni fertilizantes sintéticos','Que no paga aranceles','Que siempre sabe mejor','Que no necesita certificado fitosanitario','Se audita periódicamente y aplica solo a lotes certificados.'),
+Q('¿En qué Incoterm el vendedor entrega en sus instalaciones y el comprador asume casi todo?','EXW','DDP','CIF','DAP','En EXW el comprador se encarga del transporte, el despacho de exportación y el riesgo.'),
+Q('¿Qué Incoterm obliga al vendedor a entregar en destino con los aranceles de importación pagados?','DDP','DAP','CPT','FAS','DDP es el de mayor responsabilidad para el vendedor.'),
+Q('¿Cuáles Incoterms son solo para transporte marítimo y fluvial?','FAS, FOB, CFR y CIF','EXW y FCA','DAP y DDP','CPT y CIP','Los demás Incoterms pueden usarse con cualquier medio de transporte.'),
+Q('¿Por qué conviene diversificar los mercados de exportación?','Reduce la dependencia de un solo país y sus riesgos','Elimina los trámites aduaneros','Aumenta los aranceles','Evita cumplir normas sanitarias','Si cae la demanda o cambian las reglas en un país, los demás compensan.'),
+Q('Si el dólar sube frente al peso colombiano, ¿cómo afecta a un exportador de café?','Cada dólar que recibe equivale a más pesos','Sus costos suben automáticamente','Se le prohíbe exportar','Cambia el Incoterm','Esto favorece al exportador, aunque el precio internacional también influye.')
+);
+const barajar=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+// Arma las preguntas de la partida: primero las que aún no has visto (se guardan en el navegador), sin duplicadas y con barajado uniforme
+function armarQs(){let v=[];try{v=JSON.parse(localStorage.getItem('cv_vistas')||'[]')}catch(e){}
+ const ban=new Set(DUPS.map(d=>d[1])),pool=BANCO.filter((_,i)=>!ban.has(i));let nu=pool.filter(q=>!v.includes(q.p));
+ if(nu.length<6){try{localStorage.removeItem('cv_vistas')}catch(e){}nu=pool.slice()}
+ return barajar(nu).concat(barajar(pool.filter(q=>!nu.includes(q))))}
+// Mezcla el orden de las opciones (salvo que digan «todas/ninguna/A y B…») y las rotula A-D
+function mezcla(q){const raw=q.o.map(x=>x.replace(/^[A-D]\.\s*/,''));if(raw.some(x=>/anteriores|ninguna|ambas|\b[A-D] y [A-D]\b/i.test(x)))return q;
+ const ix=barajar(raw.map((_,i)=>i));return{...q,o:ix.map((j,k)=>'ABCD'[k]+'. '+raw[j]),c:ix.indexOf(q.c)}}
+
 // ---------- render ----------
 const LOWP=matchMedia('(pointer:coarse)').matches||(navigator.hardwareConcurrency||8)<=4;let _PR=Math.min(devicePixelRatio,LOWP?1.5:2),_fa=0,_fc=0;const RN=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});RN.shadowMap.enabled=true;RN.setPixelRatio(_PR);$('c').appendChild(RN.domElement);
 const cam=new T.PerspectiveCamera(50,1,.1,400);
@@ -163,8 +257,11 @@ function tn(f,d,ty='sine',v=.15,t=0,f2){if(!AC)return;const o=AC.createOscillato
 function nz(d,fq,v=.3,ty='lowpass'){if(!AC)return;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain(),n=AC.currentTime;s.buffer=NB;f.type=ty;f.frequency.value=fq;g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);s.connect(f);f.connect(g);g.connect(MG);s.start(n);s.stop(n+d)}
 function sfx(t){au();if(!AC)return;({click:()=>tn(700,.06,'square',.08),correcto:()=>{tn(660,.12,'triangle',.18);tn(880,.2,'triangle',.18,.1)},error:()=>{tn(220,.3,'sawtooth',.14,0,90);nz(.3,600,.3)},choque:()=>{nz(.5,900,.7);tn(120,.4,'square',.2,0,40)},trueno:()=>nz(2.4,240,.9),bocina:()=>{tn(392,.5,'square',.09);tn(494,.5,'square',.09)},victoria:()=>[523,659,784,1047].forEach((f,i)=>tn(f,.4,'triangle',.18,i*.14))}[t]||(()=>{}))()}
 function aud(){if(!AC||!eg)return;const t=AC.currentTime,e=(st=='PLAY'||st=='CINE')?ENG:0;eg.gain.setTargetAtTime(e*.07,t,.1);eo.frequency.setTargetAtTime(40+e*75,t,.1);ef.frequency.setTargetAtTime(250+e*600,t,.1);rg.gain.setTargetAtTime(RV*.1,t,.4)}
+let PAUSA=0,pT0=0;function pausa(){if(PAUSA){PAUSA=0;SP=0;t0+=performance.now()-pT0;$('pausa').style.display='none';return}if(st!='PLAY')return;PAUSA=1;pT0=performance.now();ENG=0;aud();$('pinfo').innerHTML='<b style="color:var(--y)">'+ETAPAS[etapa]+'</b><br>'+INFO[etapa]+'<br><small style="color:#bdc3c7">'+$('hint').textContent+'</small>';$('pausa').style.display='flex'}
+function salirPausa(){PAUSA=0;$('pausa').style.display='none';menu()}
+addEventListener('visibilitychange',()=>{if(document.hidden&&st=='PLAY'&&!PAUSA)pausa()});
 function mute(){MUTE=!MUTE;au();if(MG)MG.gain.setTargetAtTime(MUTE?0:1,AC.currentTime,.05);document.querySelectorAll('.mtb').forEach(b=>b.textContent=MUTE?'🔇':'🔊')}
-addEventListener('pointerdown',au);addEventListener('keydown',e=>{au();if(e.code=='KeyM')mute();if(e.code=='KeyH'&&st=='PLAY')sfx('bocina')});
+addEventListener('pointerdown',au);addEventListener('keydown',e=>{au();if(e.code=='KeyM')mute();if(e.code=='KeyP'||e.code=='Escape')pausa();if(e.code=='KeyH'&&st=='PLAY')sfx('bocina')});
 // ---------- entrada ----------
 const K={};addEventListener('keydown',e=>{K[e.code]=1;if(e.code=='Space'){SP=1;if(st=='LOSE')menu()}if(e.code.startsWith('Arrow')||e.code=='Space')e.preventDefault()});
 addEventListener('keyup',e=>K[e.code]=0);addEventListener('pointerup',()=>hold=-1);
@@ -228,7 +325,26 @@ const CAFES=[
  ()=>{const r=[0,0,.004,.02,.05][Math.floor(rnd(0,5))],o=r<=.01;return[`Residuos de plaguicidas: ${r} mg/kg · máx. 0,01 mg/kg`,o,o?`${r} mg/kg está dentro del límite de 0,01 mg/kg.`:`${r} mg/kg supera 0,01 mg/kg: sugiere plaguicidas no permitidos en producción orgánica.`]}]}];
 let CAF=CAFES[0],PAIS=PAISES[0],DIF=PAISES[0].d;
 const costoPais=p=>COSTOS_BASE.reduce((a,c,i)=>a+Math.round(c*p.k[i]/10)*10,0);
-function elegir(){st='MENU';ov(`<div class=card style="max-width:860px"><h1>ELIGE TU MERCADO DE DESTINO</h1><p>Cada país cambia los costos de flete, la ruta y la dificultad de las fases.</p><div class=pg>${PAISES.map((p,i)=>`<button class=pais onclick="pick(${i})"><span class=fl>${p.e}</span><b>${p.n}</b><small>Destino final: ${p.ciudad}</small>${i==0?'<small>🎓 Modo tutorial: sin límite de vidas</small>':''}<small>Dificultad: ${'★'.repeat(p.s)}${'☆'.repeat(5-p.s)} ${p.dn}</small><small>Costo total de la ruta: $${costoPais(p)} USD</small></button>`).join('')}</div><button class=opt style="text-align:center" onclick="guia()">📘 Guía de Incoterms 2020</button><button class=opt style="text-align:center" onclick="menu()">Volver al menú</button></div>`)}
+let NV=0,GUIAS=false;try{NV=Math.min(PAISES.length-1,+localStorage.getItem('cv_nivel')||0)}catch(e){}
+const gOk=()=>{if(GUIAS)return true;try{return localStorage.getItem('cv_guias')==='1'}catch(e){return false}};
+// Primero hay que leer las dos guías; después se eligen los destinos, que se desbloquean uno a uno
+function elegir(){if(gOk())return elegirPaises();guiaPaso(0)}
+function elegirPaises(){st='MENU';ov(`<div class=card style="max-width:860px"><h1>ELIGE TU MERCADO DE DESTINO</h1><p>Cada país cambia los costos de flete, la ruta y la dificultad. Completa un destino para desbloquear el siguiente · Desbloqueados: ${NV+1}/${PAISES.length}</p><div class=pg>${PAISES.map((p,i)=>i>NV?`<button class=pais disabled style="opacity:.45;cursor:not-allowed"><span class=fl>🔒</span><b>${p.n}</b><small>Bloqueado: completa ${PAISES[i-1].n} para abrirlo</small><small>Dificultad: ${'★'.repeat(p.s)}${'☆'.repeat(5-p.s)} ${p.dn}</small></button>`:`<button class=pais onclick="pick(${i})"><span class=fl>${p.e}</span><b>${p.n}</b><small>Destino final: ${p.ciudad}</small>${i==0?'<small>🎓 Modo tutorial: sin límite de vidas</small>':''}${i<NV?'<small>✅ Completado</small>':''}<small>Dificultad: ${'★'.repeat(p.s)}${'☆'.repeat(5-p.s)} ${p.dn}</small><small>Costo total de la ruta: $${costoPais(p)} USD</small></button>`).join('')}</div><button class=opt style="text-align:center" onclick="guia()">📘 Guía de Incoterms 2020</button><button class=opt style="text-align:center" onclick="guia2()">📗 Guía de comercio exterior</button><button class=opt style="text-align:center" onclick="menu()">Volver al menú</button></div>`)}
+const GCOM=`<div style="text-align:left;font-size:13px;line-height:1.5">
+<p><b>📄 Documentos</b><br>• <b>Factura comercial:</b> es el cobro de la venta; indica precio, cantidad e Incoterm.<br>• <b>Lista de empaque:</b> detalla contenido, bultos y peso de cada embalaje.<br>• <b>Certificado de origen:</b> demuestra dónde se produjo el café y permite aranceles preferenciales (por ejemplo, el TLC con EE. UU.).<br>• <b>Certificado fitosanitario:</b> garantiza que el café está libre de plagas; en Colombia lo expide el ICA.<br>• <b>Declaración de exportación:</b> se presenta ante la DIAN; con el levante autoriza la salida de la mercancía.<br>• <b>Conocimiento de embarque (B/L):</b> recibo de la carga, prueba del contrato de transporte y título de propiedad.<br>• <b>Manifiesto de carga:</b> relación de toda la carga de la nave, que se presenta a la aduana.</p>
+<p><b>🚢 Transporte y contenedores</b><br>• El café verde viaja en <b>contenedor seco</b> con forro o desecantes. TEU = unidad equivalente a un contenedor de 20 pies.<br>• <b>Sudor del contenedor:</b> condensación que moja el café y favorece el moho.<br>• <b>Precinto:</b> si llega roto o distinto, la carga puede ser retenida.<br>• <b>Flete:</b> precio del transporte. <b>Demoras:</b> cobro de la naviera por dejar el contenedor más tiempo del permitido.<br>• El <b>agente de aduanas</b> tramita la declaración y los trámites ante la aduana.</p>
+<p><b>🛡️ Seguro</b><br>• Cubre pérdida o daño de la mercancía durante el trayecto. El vendedor debe contratarlo en <b>CIF y CIP</b>.<br>• En <b>FOB</b> el riesgo pasa al comprador al embarcar, así que a él le conviene asegurar.</p>
+<p><b>🛃 Aduanas</b><br>• <b>Arancel:</b> impuesto a las importaciones. <b>Partida arancelaria:</b> código que clasifica el producto (café verde sin descafeinar: 0901.11).<br>• <b>Carril verde:</b> pasa sin inspección por bajo riesgo. <b>Carril rojo:</b> inspección física o rayos X.<br>• <b>Levante:</b> autorización de la aduana para disponer de la mercancía.<br>• Si la factura no coincide con la carga real, la aduana puede retener, multar o exigir correcciones.</p>
+<p><b>☕ Calidad del café</b><br>• <b>Humedad:</b> el café verde se exporta entre 10 y 12 %; más humedad causa moho y ocratoxina A (toxina de hongos).<br>• <b>Trazabilidad:</b> poder seguir el origen y el recorrido de cada lote.<br>• <b>Café especial:</b> desde 80 puntos de catación (escala SCA). <b>Orgánico:</b> sin plaguicidas ni fertilizantes sintéticos.<br>• El saco de exportación en Colombia pesa <b>70 kg</b> (el estándar internacional es de 60 kg).</p>
+<p><b>💱 Estrategia</b><br>• Diversificar mercados reduce la dependencia de un solo país.<br>• Si el dólar sube frente al peso, cada dólar que recibe el exportador equivale a más pesos.</p></div>`;
+const GINCO=()=>`<table style="font-size:13px">${INCO.map((c,i)=>`<tr><td style="white-space:nowrap;vertical-align:top"><b>${i+1}. ${c.n}</b></td><td style="text-align:left">${c.t}</td></tr>`).join('')}</table><p style="font-size:13px">🚢 Solo marítimos: FAS · FOB · CFR · CIF<br>🚚 Cualquier transporte: EXW · FCA · CPT · CIP · DAP · DPU · DDP</p><p style="font-size:13px;color:var(--y)"><b>Costo ≠ riesgo:</b> quien paga el transporte no siempre es quien asume el riesgo.</p>`;
+function guiaPaso(k){st='MENU';const B=k?'Entendido, elegir mercado ✓':'Siguiente: guía de comercio exterior →';
+ ov(`<div class=card style="max-width:900px"><p style="color:var(--y);font-weight:700">📖 Antes de empezar, lee las dos guías (${k+1}/2)</p><h1>${k?'GUÍA DE COMERCIO EXTERIOR':'GUÍA DE INCOTERMS® 2020'}</h1>${k?GCOM:GINCO()}<p id=gfin style="font-size:12px;color:#95a5a6">— Fin de la guía —</p><button class=go id=gb disabled style="opacity:.5">Lee hasta el final para continuar…</button></div>`);
+ let vis=false,tm=false;const ok=()=>{if(vis&&tm){const b=$('gb');b.disabled=false;b.style.opacity=1;b.textContent=B}};
+ setTimeout(()=>{tm=true;ok()},4000);const ob=new IntersectionObserver(e=>{if(e[0].isIntersecting){vis=true;ok();ob.disconnect()}});ob.observe($('gfin'));
+ $('gb').onclick=()=>{sfx('click');if(k){GUIAS=true;try{localStorage.setItem('cv_guias','1')}catch(e){}elegirPaises()}else guiaPaso(1)}}
+function guia(){ov(`<div class=card style="max-width:900px"><h1>GUÍA DE INCOTERMS® 2020</h1>${GINCO()}<button onclick="elegirPaises()">Volver</button></div>`)}
+function guia2(){ov(`<div class=card style="max-width:900px"><h1>GUÍA DE COMERCIO EXTERIOR</h1>${GCOM}<button onclick="elegirPaises()">Volver</button></div>`)}
 // ---------- INCOTERMS 2020 ----------
 // pay = última etapa que paga el vendedor · rk = etapa desde la que el riesgo es del comprador · x = costo extra
 const INCO=[
@@ -243,14 +359,18 @@ const INCO=[
 {n:"FOB",nm:"Free On Board (Franco a bordo)",t:"El vendedor se encarga de colocar la mercancía a bordo del buque. Una vez está a bordo, el riesgo pasa al comprador.",pay:3,rk:4,x:200,mar:1},
 {n:"CFR",nm:"Cost and Freight (Costo y flete)",t:"El vendedor paga el costo de la mercancía y el flete hasta el puerto de destino, pero el riesgo pasa al comprador cuando la mercancía queda a bordo del buque.",pay:4,rk:4,x:0,mar:1},
 {n:"CIF",nm:"Cost, Insurance and Freight (Costo, seguro y flete)",t:"El vendedor paga mercancía + seguro + flete hasta el puerto de destino. Sin embargo, el riesgo pasa al comprador cuando la mercancía queda a bordo del buque en el puerto de origen.",pay:4,rk:4,x:150,mar:1}];
-let CI=0,perdidasV=0,aciertos=0,preg=0;
-function incoQ(o){let i;do i=Math.floor(Math.random()*11);while(o&&i==o.i);const c=INCO[i],L=[c].concat(INCO.filter((_,j)=>j!=i).sort(()=>Math.random()-.5).slice(0,3)).sort(()=>Math.random()-.5);
- return{i,p:'¿Qué Incoterm corresponde a este concepto? «'+c.t+'»',o:L.map((x,k)=>'ABCD'[k]+'. '+x.n+' – '+x.nm.split(' (')[0]),c:L.indexOf(c)}}
-function guia(){ov(`<div class=card style="max-width:900px"><h1>GUÍA DE INCOTERMS® 2020</h1><table style="font-size:13px">${INCO.map((c,i)=>`<tr><td style="white-space:nowrap;vertical-align:top"><b>${i+1}. ${c.n}</b></td><td style="text-align:left">${c.t}</td></tr>`).join('')}</table><p style="font-size:13px">🚢 Solo marítimos: FAS · FOB · CFR · CIF<br>🚚 Cualquier transporte: EXW · FCA · CPT · CIP · DAP · DPU · DDP</p><p style="font-size:13px;color:var(--y)"><b>Costo ≠ riesgo:</b> quien paga el transporte no siempre es quien asume el riesgo.</p><button onclick="elegir()">Volver</button></div>`)}
+let CI=0,perdidasV=0,aciertos=0,preg=0,LOG=[],FALLOS={};
+function incoQ(o){let i;do i=Math.floor(Math.random()*11);while(o&&i==o.i);const c=INCO[i],tp=Math.floor(Math.random()*3),
+ e=`${c.n} (${c.nm.split(' (')[0]}): el vendedor paga hasta «${ETAPAS[c.pay]}» y el riesgo pasa al comprador en «${c.rk>8?'su puerta':ETAPAS[c.rk]}».`;
+ // 3 plantillas: concepto→Incoterm, etapa donde pasa el riesgo, etapa hasta donde paga el vendedor
+ if((tp==1&&c.rk<=8)||tp==2){const r=tp==1,k=r?c.rk:c.pay,m=barajar([k].concat(barajar(ETAPAS.map((_,j)=>j).filter(j=>j!=k)).slice(0,3)));
+  return{i,p:r?`En un contrato ${c.n}, ¿en qué etapa pasa el riesgo al comprador?`:`En un contrato ${c.n}, ¿hasta qué etapa paga los costos el vendedor?`,o:m.map((x,q)=>'ABCD'[q]+'. '+ETAPAS[x]),c:m.indexOf(k),e}}
+ const L=barajar([c].concat(barajar(INCO.filter((_,j)=>j!=i)).slice(0,3)));
+ return{i,p:'¿Qué Incoterm corresponde a este concepto? «'+c.t+'»',o:L.map((x,k)=>'ABCD'[k]+'. '+x.n+' – '+x.nm.split(' (')[0]),c:L.indexOf(c),e}}
 function contrato(){const c=INCO[CI];ov(`<div class=card><h1>CONTRATO DE VENTA</h1><p style="font-size:20px;font-weight:700">${c.n} · ${c.nm}</p><p>${c.t}</p><p>${c.mar?'🚢 Solo transporte marítimo':'🚚 Cualquier medio de transporte'}</p><p>Tú pagas hasta: <b>${ETAPAS[c.pay]}</b><br>El riesgo pasa al comprador en: <b>${c.rk>8?'Nunca (llega a su puerta)':ETAPAS[c.rk]}</b></p><p style="font-size:13px;color:#bdc3c7">Las etapas que paga el comprador no suman a tu costo, y solo pagas penalización por pérdidas mientras el riesgo es tuyo.</p><button class=go onclick="iniciar()">Comenzar</button></div>`)}
 function cafe(){ov(`<div class=card style="max-width:860px"><h1>ELIGE EL TIPO DE CAFÉ</h1><p>Cada variedad cambia el costo y los controles de calidad de tu carga.</p><div class=pg>${CAFES.map((c,i)=>`<button class=pais onclick="cv(${i})"><span class=fl>${c.e}</span><b>${c.n}</b><small>${c.d}</small><small>Costo del café: ${c.k==1?'estándar':'×'+c.k}</small></button>`).join('')}</div><button class=opt style="text-align:center" onclick="elegir()">Volver</button></div>`)}
 function cv(i){sfx('click');CAF=CAFES[i];COSTOS[0]=Math.round(COSTOS[0]*CAF.k/10)*10;if(CAF.doc&&COSTOS[2]>0)COSTOS[2]+=CAF.doc;contrato()}
-function pick(i){sfx('click');PAIS=PAISES[i];DIF=PAIS.d;COSTOS.forEach((_,j)=>COSTOS[j]=Math.round(COSTOS_BASE[j]*PAIS.k[j]/10)*10);
+function pick(i){if(i>NV)return;sfx('click');PAIS=PAISES[i];DIF=PAIS.d;COSTOS.forEach((_,j)=>COSTOS[j]=Math.round(COSTOS_BASE[j]*PAIS.k[j]/10)*10);
  if(PAIS.r){R=PAIS.r;PI=[0,0,1,1,1,PAIS.p,PAIS.p,R.length-1,R.length-1]}else{R=R_US;PI=PI_US}
  INFO[7]=INFO7.replace('la FDA',PAIS.inf);CI=Math.floor(Math.random()*11);const c=INCO[CI];COSTOS.forEach((_,j)=>{if(j>c.pay)COSTOS[j]=0});COSTOS[c.pay]+=c.x;cafe()}
 // ---------- DISPOSITIVO: PC / CELULAR ----------
@@ -276,7 +396,7 @@ function menu(){st='MENU';etapa=0;vidas=3;$('hud').style.display='none';sc=escen
  let t=0;upd=dt=>{t+=dt;for(let i=0;i<P.count;i++)P.setZ(i,Math.sin(P.getX(i)*.2+t)*.5+Math.cos(P.getY(i)*.25+t*.8)*.4);P.needsUpdate=true;
   sh.position.set(8+Math.sin(t*.2)*3,.2+Math.sin(t*1.4)*.25,-4);sh.rotation.z=Math.sin(t)*.03;cam_(Math.sin(t*.15)*18,7,24+Math.cos(t*.15)*3,0,3,-4)};upd(0);snap();
  ov(`<div class=hero><div class=badge>☕ Café de Colombia → el mundo</div><h1 class=big>Casa Verde</h1><h2>Simulador logístico de exportación</h2><p>Carga, conduce, tramita y navega: lleva tu café por las 9 etapas de la cadena de suministro global.</p><div style="margin-top:14px"><button class="dv${MOVIL?'':' on'}" onclick="dispositivo(0)">💻 PC</button><button class="dv${MOVIL?' on':''}" onclick="dispositivo(1)">📱 Celular</button><button class=fs onclick="pantalla()">⛶ Pantalla completa</button><button class="fs mtb" onclick="mute()">🔊</button></div><button class=go onclick="elegir()">Iniciar viaje</button><p class=ctl id=ctl>${CTL(MOVIL)}</p><div class=cred>Creado por <b>Lauren Hernandez</b></div></div>`)}
-function iniciar(){infoE=-1;sfx('click');qs=BANCO.slice().sort(()=>Math.random()-.5);DUPS.forEach(([a,b])=>qs.splice(Math.max(qs.indexOf(BANCO[a]),qs.indexOf(BANCO[b])),1));{const a=incoQ(),b=incoQ(a);qs.splice(0,2,a,b)}qi=0;bono=0;etapa=0;vidas=3;perdidas=0;perdidasV=0;aciertos=0;preg=0;t0=performance.now();cargar()}
+function iniciar(){infoE=-1;sfx('click');qs=armarQs();qs.splice(Math.floor(Math.random()*4),0,incoQ());qi=0;bono=0;etapa=0;vidas=3;perdidas=0;perdidasV=0;LOG=[];FALLOS={};aciertos=0;preg=0;t0=performance.now();cargar()}
 let R=[[104.5,85],[104.5,79.6],[106,72],[104,66],[99.8,64.2],[101,59],[104,53],[106,49.3]],PI=[0,0,1,1,1,4,4,7,7],
 LAND=["12,24 23,19 39,20 55,20 70,22 85,22 92,26 86,31 95,35 101,38 103,32 102,28 110,29 115,30 119,34 124,38 120,43 114,45 110,47 106,49.5 104,53 104,55 99,59 100,64 98,63 96,60 91,60 86,60.5 83,64 82.5,68 85,71 89,71 90,69 93,68.5 92,74 96,74.5 97,79 100,81 97,81.5 94,78 89,76 84,74 75,70 71,64 67,59 63,57.5 59,55 56,50 56,43 52,39 47,34 40,30 32,30 28,32 22,33 17,35 20,31 15,28",
 "107,12 120,8 150,7 160,12 160,20 140,25 130,28 125,22 112,14","95,68 102,67 106,70 102,70 98,67.5",
@@ -287,45 +407,64 @@ LAND=["12,24 23,19 39,20 55,20 70,22 85,22 92,26 86,31 95,35 101,38 103,32 102,2
 const R_US=R,PI_US=PI;
 const at=i=>{const N=R.length-1,a=Math.min(N,Math.floor(i)),b=Math.min(N,a+1),f=i-a;return[R[a][0]+(R[b][0]-R[a][0])*f,R[a][1]+(R[b][1]-R[a][1])*f]},pts=a=>a.map(q=>q.join(',')).join(' ');
 function cargarMapa(){st='LOAD';$('hud').style.display='none';const pv=PI[Math.max(0,etapa-1)],cu=PI[etapa];
- ov(`<div class=card style="max-width:1000px"><h1>DASHBOARD LOGÍSTICO</h1><p>Fase ${etapa+1} de 9 · Iniciando: ${ETAPAS[etapa]}</p><svg id=mp viewBox="0 15 360 125"><rect x=-60 y=-60 width=480 height=300 fill="#10304a"/>${LAND.map(l=>`<polygon points="${l}"/>`).join('')}<polyline id=rf points="${pts(R)}"/><polyline id=rd points=""/><circle cx=104.5 cy=85 r=1 fill="#2ecc71"/><circle cx=${R[R.length-1][0]} cy=${R[R.length-1][1]} r=1.3 fill="#e74c3c"/><text class=ml x=102.5 y=87.6 text-anchor=end>Origen: Colombia</text><text class=ml x=${R[R.length-1][0]+(PAIS.la=="end"?-2.5:2.5)} y=${R[R.length-1][1]-.3} text-anchor=${PAIS.la}>Destino final: ${PAIS.ciudad}</text><g id=mk><circle r=1.5 fill="#fff" stroke="#2ecc71" stroke-width=.4 /><text y=-2.2>🚚</text></g></svg><p style="font-size:13px;color:#bdc3c7">Colombia → ${PAIS.n} (Normativa ${PAIS.nm}) · Dificultad: ${PAIS.dn} · línea verde: tramo recorrido · línea amarilla: ruta pendiente</p><div class=bar style="margin:10px auto"><div><i id=lb></i></div></div></div>`);
+ ov(`<div class=card style="max-width:1000px"><h1>DASHBOARD LOGÍSTICO</h1><p>Fase ${etapa+1} de 9 · Iniciando: ${ETAPAS[etapa]}</p><div class=jr>${ETAPAS.map((e,i)=>`<b class="${i<etapa?'d':i==etapa?'n':''}">${e}</b>`).join('')}</div><svg id=mp viewBox="0 15 360 125"><rect x=-60 y=-60 width=480 height=300 fill="#10304a"/>${LAND.map(l=>`<polygon points="${l}"/>`).join('')}<polyline id=rf points="${pts(R)}"/><polyline id=rd points=""/><circle cx=104.5 cy=85 r=1 fill="#2ecc71"/><circle cx=${R[R.length-1][0]} cy=${R[R.length-1][1]} r=1.3 fill="#e74c3c"/><text class=ml x=102.5 y=87.6 text-anchor=end>Origen: Colombia</text><text class=ml x=${R[R.length-1][0]+(PAIS.la=="end"?-2.5:2.5)} y=${R[R.length-1][1]-.3} text-anchor=${PAIS.la}>Destino final: ${PAIS.ciudad}</text><g id=mk><circle r=1.5 fill="#fff" stroke="#2ecc71" stroke-width=.4 /><text y=-2.2>🚚</text></g></svg><p style="font-size:13px;color:#bdc3c7">Colombia → ${PAIS.n} (Normativa ${PAIS.nm}) · Dificultad: ${PAIS.dn} · línea verde: tramo recorrido · línea amarilla: ruta pendiente</p><div class=bar style="margin:10px auto"><div><i id=lb></i></div></div></div>`);
  const a=performance.now(),W=[0,15,360,125],Z=PAIS.z,mp=$('mp'),mk=$('mk'),ez=x=>x*x*(3-2*x);
  (function f(){const t=performance.now()-a,k=ez(Math.min(1,Math.max(0,(t-500)/1200))),p=ez(Math.min(1,Math.max(0,(t-1500)/1400))),i=pv+(cu-pv)*p,m=at(i);
   mp.setAttribute('viewBox',W.map((v,j)=>v+(Z[j]-v)*k).join(' '));mk.setAttribute('transform',`translate(${m})`);
   $('rd').setAttribute('points',pts(R.slice(0,Math.floor(i)+1).concat([m])));mk.lastChild.textContent=i>1&&i<PI[5]?'🚢':'🚚';
   fill('lb',t/3400);if(t<3400)requestAnimationFrame(f);else empezar()})()}
 function empezar(){ov('');st='PLAY';$('hud').style.display='block';initEtapa()}
-function initEtapa(){ENG=0;$('spd').style.display='none';document.body.classList.toggle('nk',etapa==2||etapa==7);clickH=null;SP=0;hold=-1;nxOk=0;$('pn').innerHTML='';bars([]);upd=STAGES[etapa]();hudTop();info();snap()}
-function avanzar(){etapa++;if(etapa>=9)return victoria();if([2,4,6,8].includes(etapa)&&qi<qs.length)quiz();else cargar()}
-function perder(){if(st!='PLAY')return;sfx('choque');chispas();ENG=0;if([1,6,8].includes(etapa))setTimeout(()=>sfx('bocina'),120);if(PAIS!==PAISES[0])vidas--;perdidas++;if(etapa<INCO[CI].rk)perdidasV++;shake=.9;flash();upd=()=>{};clickH=null;hudTop();
- if(vidas<=0)setTimeout(()=>{st='LOSE';$('hud').style.display='none';ov(`<div class=card style="border-color:#c0392b"><h1 style="color:#e74c3c">OPERACIÓN LOGÍSTICA FALLIDA</h1><p>Te quedaste sin vidas.</p><button onclick="menu()">PRESIONA ESPACIO O AQUÍ PARA REINICIAR</button></div>`)},500);
+function initEtapa(){ENG=0;$('spd').style.display='none';document.body.classList.toggle('nk',etapa==2||etapa==7);clickH=null;SP=0;hold=-1;nxOk=0;$('pn').className='';$('pn').innerHTML='';bars([]);upd=STAGES[etapa]();hudTop();info();snap()}
+function cierre(){const d=document.createElement('div');d.className='chk';d.innerHTML='<div>✓</div><small>'+ETAPAS[etapa]+' completada</small>';document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+function avanzar(){if(st!='PLAY')return;st='CIERRE';ENG=0;sfx('correcto');cierre();setTimeout(()=>{etapa++;if(etapa>=9)return victoria();if([2,4,6,8].includes(etapa)&&qi<qs.length)quiz();else cargar()},900)}
+function reg(t,m){LOG.push({e:etapa,t,m})}
+const TIPF=["Rechaza los sacos defectuosos y esquiva los montacargas: un lote malo o un choque cuesta dinero antes de salir.","Cuida el combustible y esquiva los obstáculos: un accidente en el tramo nacional retrasa la llegada al puerto.","Verifica que cada documento coincida con el contrato (Incoterm, cantidades, partes) antes de aprobarlo.","Precinta bien y colabora con la inspección: un bulto sospechoso o un tiempo agotado detiene la exportación.","Planea la ruta: rocas y boyas son riesgos reales de la navegación, y el flete marítimo es el mayor costo de la cadena.","Maniobra la grúa con calma: un golpe en el puerto daña la carga y retrasa el despacho.","Conduce con cuidado: aquí el responsable del riesgo depende del Incoterm que elegiste.","Compara cada dato con la norma del país: dos errores retienen la carga. El laboratorio cuesta, pero evita el riesgo.","La última milla cierra el contrato: un choque tan cerca de la entrega puede perder la venta."];
+function reporte(){const prev=$('ov').innerHTML,ps=st;st='REP';
+ const I=INCO[CI],pv=perdidasV*300,fa=Object.keys(FALLOS),esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'),
+ s1=LOG.length?LOG.map(x=>`<div class=rp><b>Fase ${x.e+1} · ${ETAPAS[x.e]} — ${esc(x.t)}</b><p>${esc(x.m)}</p></div>`).join(''):'<p style="color:#2ecc71">✅ No fallaste ninguna decisión: documentos, inspecciones y quiz salieron bien.</p>',
+ s2=fa.length?fa.map(e=>`<div class=rp><b>Fase ${+e+1} · ${ETAPAS[e]} — ${FALLOS[e]} vida(s) perdida(s)</b><p>${TIPF[e]}</p></div>`).join(''):'<p style="color:#2ecc71">✅ No perdiste ninguna vida.</p>',
+ rk=`Hasta antes de la fase ${I.rk+1} (${ETAPAS[I.rk]}) el riesgo era tuyo`;
+ ov(`<div class=card style="max-width:760px"><h1>📋 REPORTE DE APRENDIZAJE</h1><p>${PAIS.n} · ${CAF.n} · ${I.n}</p><div class=rp><b>Quiz: ${aciertos}/${preg} aciertos · Decisiones falladas: ${LOG.length} · Vidas perdidas: ${perdidas}</b></div><h2>Lo que conviene repasar</h2>${s1}<h2>Dónde perdiste vidas</h2>${s2}<h2>Tu Incoterm: ${I.n}</h2><div class=rp><p>${I.t}</p><p>${rk}${pv?`: perdiste ${perdidasV} vida(s) en ese tramo y se sumaron $${pv} al costo.`:'; no hubo pérdidas en ese tramo.'} Recuerda: quien paga el transporte no siempre asume el riesgo.</p></div><button id=rb>← Volver</button></div>`);
+ $('rb').onclick=()=>{st=ps;ov(prev)}}
+function perder(){if(PAUSA)return setTimeout(perder,300);if(st!='PLAY')return;sfx('choque');chispas();ENG=0;if([1,6,8].includes(etapa))setTimeout(()=>sfx('bocina'),120);if(PAIS!==PAISES[0])vidas--;perdidas++;FALLOS[etapa]=(FALLOS[etapa]||0)+1;if(etapa<INCO[CI].rk)perdidasV++;shake=.9;flash();upd=()=>{};clickH=null;hudTop();
+ if(vidas<=0)setTimeout(()=>{st='LOSE';$('hud').style.display='none';ov(`<div class=card style="border-color:#c0392b"><h1 style="color:#e74c3c">OPERACIÓN LOGÍSTICA FALLIDA</h1><p>Te quedaste sin vidas.</p><button onclick="reporte()" style="background:#2980b9">📋 Ver reporte de aprendizaje</button><button onclick="menu()">PRESIONA ESPACIO O AQUÍ PARA REINICIAR</button></div>`)},500);
  else setTimeout(()=>{if(st=='PLAY')initEtapa()},500)}
-function quiz(){st='QUIZ';$('hud').style.display='none';const q=qs[qi];
+function quiz(){st='QUIZ';$('hud').style.display='none';const q=mezcla(qs[qi]);
+ try{const v=JSON.parse(localStorage.getItem('cv_vistas')||'[]');if(q.i===undefined&&!v.includes(q.p)){v.push(q.p);localStorage.setItem('cv_vistas',JSON.stringify(v))}}catch(e){}
  ov(`<div class=card><h1 style="color:#fff">COMITÉ DIRECTIVO DE COMERCIO EXTERIOR</h1><p style="font-weight:700;color:var(--y);margin:14px 0">${q.p}</p>${q.o.map((o,i)=>`<button class=opt>${o}</button>`).join('')}<p id=fb style="min-height:24px;font-weight:700"></p></div>`);
  let done=0;const bq=Math.min(250,Math.round(COSTOS.reduce((a,b)=>a+b)*.06));const bs=[...document.querySelectorAll('.opt')];
  bs.forEach((b,i)=>b.onclick=()=>{if(done)return;done=1;const ok=i==q.c;sfx(ok?'correcto':'error');
-  preg++;if(ok){bono+=bq;aciertos++}b.style.background=ok?'#27ae60':'#c0392b';bs[q.c].style.background='#27ae60';
-  $('fb').style.color=ok?'#2ecc71':'#e74c3c';$('fb').textContent=ok?'¡Correcto! Decisión óptima. (-$'+bq+' USD)':'Incorrecto. Se aplicó sobrecosto por ineficiencia.';
-  setTimeout(()=>{qi++;cargar()},2000)})}
+  preg++;if(ok){bono+=bq;aciertos++}else reg('Quiz: '+q.p,'Elegiste «'+q.o[i].replace(/^[A-D]\.\s*/,'')+'» pero la correcta era «'+q.o[q.c].replace(/^[A-D]\.\s*/,'')+'». '+(q.e||''));b.style.background=ok?'#27ae60':'#c0392b';bs[q.c].style.background='#27ae60';
+  const det=(ok?'':'Respuesta correcta: '+q.o[q.c].replace(/^[A-D]\.\s*/,'')+'. ')+(q.e||'');
+  $('fb').style.color=ok?'#2ecc71':'#e74c3c';$('fb').innerHTML=(ok?'¡Correcto! Decisión óptima. (-$'+bq+' USD)':'Incorrecto. Se aplicó sobrecosto por ineficiencia.')+(det?'<small style="display:block;margin-top:6px;font-weight:400;color:#ecf0f1">'+det+'</small>':'');
+  $('fb').insertAdjacentHTML('afterend','<button class=go id=cn>Continuar →</button>');$('cn').onclick=()=>{qi++;cargar()}})}
 function nivel(){const p=preg?aciertos/preg:0,L=[[1,'🏆','Experto','Dominas los conceptos de comercio exterior e Incoterms.'],[.75,'🥇','Avanzado','Muy buen manejo; repasa los detalles que fallaste.'],[.5,'🥈','Intermedio','Vas bien, pero conviene repasar la Guía de Incoterms.'],[.25,'🥉','Básico','Conoces lo esencial; repasa la Guía de Incoterms y vuelve a jugar.']],l=L.find(x=>p>=x[0])||[0,'📘','Inicial','Aún te falta práctica: estudia la Guía de Incoterms y juega de nuevo.'];
  return `<div style="margin:12px 0;padding:12px;border:2px solid var(--y);border-radius:10px"><p style="font-size:13px;color:#bdc3c7">Dominio del tema (comité directivo)</p><p style="font-size:20px;font-weight:700;color:var(--y)">${l[1]} Nivel ${l[2]} · ${aciertos}/${preg} aciertos · Nota ${(p*5).toFixed(1)}/5.0</p><p style="font-size:13px">${l[3]}</p></div>`}
-function victoria(){st='WIN';$('hud').style.display='none';const lt=Math.round((performance.now()-t0)/1000),base=COSTOS.reduce((a,b)=>a+b),pen=perdidasV*300,tot=Math.round((base+pen-bono)*(perdidas?1:.9));sfx('victoria');confeti();
- ov(`<div class=card style="border-color:#27ae60"><h1>¡EXPORTACIÓN COMPLETADA CON ÉXITO!</h1><p>Destino: ${PAIS.n} · Café: ${CAF.n} · Incoterm: ${INCO[CI].n} · Lead time: ${lt}s · Vidas perdidas: ${perdidas}</p><table>${NC.map((n,i)=>`<tr><td>${n}</td><td>$${COSTOS[i]}</td></tr>`).join('')}<tr><td>Pérdidas bajo tu riesgo (×$300)</td><td>+$${pen}</td></tr><tr><td>Bono estratégico (quiz)</td><td>-$${bono}</td></tr>${perdidas?'':'<tr><td>Operación impecable (-10%)</td><td>✓</td></tr>'}</table>${nivel()}<h1 style="color:#2ecc71">COSTO TOTAL: $${tot} USD</h1><button onclick="menu()">Menú principal</button><p style="font-size:12px;color:#95a5a6;margin-top:8px">Creado por Lauren Hernandez</p></div>`)}
+function victoria(){st='WIN';$('hud').style.display='none';const lt=Math.round((performance.now()-t0)/1000),base=COSTOS.reduce((a,b)=>a+b),pen=perdidasV*300,tot=Math.round((base+pen-bono)*(perdidas?1:.9));sfx('victoria');confeti();let ds='';{const ix=PAISES.indexOf(PAIS);if(ix==NV&&NV<PAISES.length-1){NV++;try{localStorage.setItem('cv_nivel',NV)}catch(e){}ds='<p style="font-size:18px;font-weight:700;color:#2ecc71">🔓 ¡Nuevo destino desbloqueado: '+PAISES[NV].e+' '+PAISES[NV].n+'!</p>'}else if(ix==PAISES.length-1)ds='<p style="font-size:18px;font-weight:700;color:#2ecc71">🏆 ¡Completaste todos los destinos!</p>'}
+ ov(`<div class=card style="border-color:#27ae60"><h1>¡EXPORTACIÓN COMPLETADA CON ÉXITO!</h1><p>Destino: ${PAIS.n} · Café: ${CAF.n} · Incoterm: ${INCO[CI].n} · Lead time: ${lt}s · Vidas perdidas: ${perdidas}</p><table>${NC.map((n,i)=>`<tr><td>${n}</td><td>$${COSTOS[i]}</td></tr>`).join('')}<tr><td>Pérdidas bajo tu riesgo (×$300)</td><td>+$${pen}</td></tr><tr><td>Bono estratégico (quiz)</td><td>-$${bono}</td></tr>${perdidas?'':'<tr><td>Operación impecable (-10%)</td><td>✓</td></tr>'}</table>${ds}${nivel()}<h1 style="color:#2ecc71">COSTO TOTAL: $${tot} USD</h1><button onclick="reporte()">📋 Reporte de aprendizaje</button><button onclick="menu()">Menú principal</button><p style="font-size:12px;color:#95a5a6;margin-top:8px">Creado por Lauren Hernandez</p></div>`)}
+// Papel con información real: dibuja un formulario en una textura. L[0] es el título; el resto, líneas «Etiqueta: valor». k = píxeles por unidad 3D
+function hoja(w,h,L,k){const c=document.createElement('canvas'),W=c.width=Math.round(w*k),H=c.height=Math.round(h*k),x=c.getContext('2d'),fs=Math.round(W/17);
+ x.fillStyle='#fffdf7';x.fillRect(0,0,W,H);x.strokeStyle='#9aa5ad';x.lineWidth=3;x.strokeRect(8,8,W-16,H-16);x.textBaseline='middle';let y=fs*1.6;
+ L.forEach((l,i)=>{if(!i){x.fillStyle='#1b2a38';x.font='bold '+Math.round(fs*1.05)+'px sans-serif';x.textAlign='center';x.fillText(l,W/2,y,W-40);y+=fs*.9;x.fillRect(24,y,W-48,3);y+=fs*1.5;return}
+  const j=l.indexOf(':'),a=l.slice(0,j+1),b=l.slice(j+1).trim();x.textAlign='left';x.font=fs+'px sans-serif';x.fillStyle='#5d6d7e';x.fillText(a,26,y,W*.55);
+  const bx=26+Math.min(x.measureText(a).width,W*.55)+10;x.font='bold '+fs+'px sans-serif';x.fillStyle='#111';x.fillText(b,bx,y,W-bx-22);y+=fs*1.75});
+ const tx=new T.CanvasTexture(c);tx.anisotropy=4;const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tx}));m.rotation.x=-Math.PI/2;return m}
 // ---------- ETAPA 1: BODEGA ----------
 function s0(){sc=escena(0xcfd8dc);box(sc,46,.4,34,CON,0,-.2,0);const gr=new T.GridHelper(46,23,0xb2bec3,0xb2bec3);gr.position.y=.02;sc.add(gr);
  box(sc,46,8,.6,0x95a5a6,0,4,-17);for(let i=-2;i<=2;i++){box(sc,5,.4,2,MAD,i*8,.2,-14);box(sc,3,2,1.6,0xc9a46c,i*8,1.4,-14)}
  const pila=new T.Group();pila.position.set(-14,0,0);box(pila,5,.5,6,MAD,0,.25,0);for(let i=0;i<3;i++)for(let j=0;j<3;j++){const s=saco();s.position.set(i*1.4-1.4,1.1,j*1.7-1.7);pila.add(s)}sc.add(pila);
  const cm=camion(0x2980b9,true);cm.rotation.y=-Math.PI/2;cm.position.set(14.6,0,0);sc.add(cm);
- const p=jugador();p.position.set(-8,0,8);sc.add(p);let n=0,tiene=false,t=0,bad=false;
+ const p=jugador();p.position.set(-17.5,0,8);sc.add(p);let n=0,tiene=false,t=0,bad=false;
  const fk=[-3,5,-8,9].slice(0,DIF.fn).map((fx,i)=>{const m=montacargas();m.position.set(fx,0,i?-8:8);sc.add(m);return{m,d:i?1:-1,v:(5+i*2)*DIF.fk}});
  bars([['b','Sacos cargados 0/'+DIF.sk]]);hint('Mueve al operador (flechas / WASD). Lleva '+DIF.sk+' bultos de café al camión y esquiva los montacargas. Si el saco se ve verdoso está defectuoso: recházalo con ESPACIO.');
  return dt=>{t+=dt;let dx=(RT()?1:0)-(LF()?1:0),dz=(DN()?1:0)-(UP()?1:0);const l=Math.hypot(dx,dz);
   if(l){dx/=l;dz/=l;const v=tiene?10:15;p.position.x=Math.max(-21,Math.min(21,p.position.x+dx*v*dt));p.position.z=Math.max(-14,Math.min(14,p.position.z+dz*v*dt));
    let d=Math.atan2(dx,dz)-p.rotation.y;d=Math.atan2(Math.sin(d),Math.cos(d));p.rotation.y+=d*Math.min(1,12*dt);p.position.y=Math.abs(Math.sin(t*12))*.15;swing(p,t,1)}else{p.position.y=0;swing(p,t,0)}if(tiene)p.A[0].rotation.x=p.A[1].rotation.x=-2.7;
   const x=p.position.x,z=p.position.z;
-  for(const f of fk){const q=f.m.position;q.z+=f.d*f.v*dt;if(q.z>13||q.z<-12)f.d*=-1;f.m.rotation.y=f.d>0?0:Math.PI;if(Math.hypot(q.x-x,q.z-z)<2.4)return perder()}
+  for(const f of fk){const q=f.m.position;q.z+=f.d*f.v*dt;if(q.z>13||q.z<-12)f.d*=-1;f.m.rotation.y=f.d>0?0:Math.PI;if(t>1.5&&Math.hypot(q.x-x,q.z-z)<2.4)return perder()}
   if(Math.hypot(x+14,z)<4.5&&!tiene){tiene=true;bad=Math.random()<.3*CAF.dr;p.sack.children[0].material=mat(bad?0x5a7a2a:0x6f4e37);p.sack.visible=true;sfx('click');ft(bad?'⚠️ Saco defectuoso: ESPACIO para rechazarlo':'✅ Saco en buen estado',bad?'#e67e22':'#2ecc71')}
   if(SP){SP=0;if(tiene){tiene=false;p.sack.visible=false;if(bad){sfx('correcto');ft('Saco rechazado ✔','#2ecc71')}else{sfx('error');ft('Era un saco bueno: tiempo perdido','#e67e22')}}}
-  if(tiene&&Math.hypot(x-11,z)<5){tiene=false;p.sack.visible=false;sfx('click');ft('+1 saco 📦');if(bad){bono-=150;sfx('error');ft('¡Defectuoso cargado! +$150','#e74c3c')}const s=saco();s.position.set(n%2?.5:-.5,1.75,-.3+(n>>1)*1.1*5/DIF.sk);cm.add(s);n++;fill('b',n/DIF.sk);txt('b','Sacos cargados '+n+'/'+DIF.sk);if(n>=DIF.sk)return avanzar()}
+  if(tiene&&Math.hypot(x-11,z)<5){tiene=false;p.sack.visible=false;sfx('click');ft('+1 saco 📦');if(bad){bono-=150;reg('Cargaste un saco defectuoso','Un saco verdoso o con moho debe rechazarse antes de cargar: si llega al comprador se reclama el lote y se pierde calidad y dinero.');sfx('error');ft('¡Defectuoso cargado! +$150','#e74c3c')}const s=saco();s.position.set(n%2?.5:-.5,1.75,-.3+(n>>1)*1.1*5/DIF.sk);cm.add(s);n++;fill('b',n/DIF.sk);txt('b','Sacos cargados '+n+'/'+DIF.sk);if(n>=DIF.sk)return avanzar()}
   cam_(x*.5,22,z*.4+17,x*.5,0,z*.4)}}
 // ---------- ETAPAS 2 y 7: CONDUCCIÓN ----------
 function drive(intl){sc=escena(intl?0xf5b57a:0x87ceeb,260);box(sc,200,.2,400,intl?ENT().g:0x64b464,0,-.1,-120);box(sc,22,.25,400,ASF,0,0,-120);
@@ -355,19 +494,21 @@ function drive(intl){sc=escena(intl?0xf5b57a:0x87ceeb,260);box(sc,200,.2,400,int
   cam_(x*.5,6.5,13,x*.7,1.5,-14)}}
 // ---------- ETAPA 3: DOCUMENTOS ----------
 function s2(){sc=escena(0xe3e8ea,120);box(sc,22,1,16,0x8d6e4f,0,-.5,0);
- const D=["RUT","Factura Comercial","Lista de Empaque","Registro Exp","Decl. Exportación","Cert. Origen"],pr=D.map(()=>0),pp=[];let ok=0;
+ const D=["RUT","Factura Comercial","Lista de Empaque","Registro Exp","Decl. Exportación","Cert. Origen"],pr=D.map(()=>0),pp=[];let ok=0,bl=0;
  const IN=INCO[CI].n,OT=INCO.filter(c=>c.n!=IN),mal=new Set(),fl=[];while(mal.size<(DIF.s>2?2:1))mal.add(Math.floor(Math.random()*6));
- const TX=D.map((d,i)=>d+' · Incoterm '+(mal.has(i)?OT[Math.floor(Math.random()*OT.length)].n:IN));
- $('pn').innerHTML=TX.map((d,i)=>`<div class=doc data-i=${i}><i></i><b class=flag data-f=${i}>🚩</b><span>${d}</span></div>`).join('')+'<div id=nx></div>';
- const els=[...document.querySelectorAll('.doc')];els.forEach(e=>e.onpointerdown=()=>hold=+e.dataset.i);
- document.querySelectorAll('.flag').forEach(b=>b.onpointerdown=e=>{e.stopPropagation();const i=+b.dataset.f;if(fl[i]||pr[i]>=100)return;
-  if(mal.has(i)){fl[i]=1;sfx('correcto');ft('🚩 ¡Error detectado!','#2ecc71');pr[i]=100;els[i].classList.add('ok');els[i].firstChild.style.width='100%';els[i].lastChild.textContent=TX[i]+' (Error reportado)';ok++;fill('pg',ok/6);txt('pg','Documentos '+ok+'/6');if(ok==6)nxt('Generar Manifiesto →')}
-  else{sfx('error');bono-=50;ft('Ese documento era correcto: +$50','#e67e22')}});
- bars([['pg','Documentos 0/6']]);hint('Contrato: '+IN+'. Mantén presionado cada documento para aprobarlo; si su Incoterm NO coincide, márcalo con 🚩.');cam_(0,15,11,0,0,0);
- return dt=>{const i=hold;if(i>=0&&pr[i]<100){pr[i]=Math.min(100,pr[i]+85*DIF.doc*dt);els[i].firstChild.style.width=pr[i]+'%';
-   if(pr[i]>=100&&mal.has(i)){pr[i]=0;ft('¡Aprobaste un documento con error!','#e74c3c');return perder()}
-   if(pr[i]>=100){sfx('correcto');els[i].classList.add('ok');els[i].lastChild.textContent=TX[i]+' (Aprobado)';
-    const g=new T.Group();box(g,4,.1,5.4,0xffffff,0,0,0);box(g,2.6,.12,.3,0x95a5a6,0,0,-1.2);box(g,1,.14,1,0xc0392b,1,0,1.4);
+ const INC=D.map((d,i)=>mal.has(i)?OT[Math.floor(Math.random()*OT.length)].n:IN),TX=D.map((d,i)=>d+' · Incoterm '+INC[i]),
+ DI=(i,n)=>[['REGISTRO ÚNICO TRIBUTARIO','NIT: 900.482.115-3','Actividad: exportación de café','Estado: ACTIVO','Incoterm: '+n],['FACTURA COMERCIAL','Producto: café verde '+CAF.n,'Cantidad: 18.000 kg','Incoterm: '+n,'Destino: '+PAIS.n],['LISTA DE EMPAQUE','Embalaje: sacos de 70 kg','Peso neto: 18.000 kg','Contenedor: 1 x 20\' seco','Incoterm: '+n],['REGISTRO DE EXPORTADOR','Autoridad: '+PAIS.nm,'Producto: café verde','Estado: ACTIVO','Incoterm: '+n],['DECLARACIÓN DE EXPORTACIÓN','Autoridad: DIAN','Partida: 0901.11.00','Incoterm: '+n,'Destino: '+PAIS.n],['CERTIFICADO DE ORIGEN','Origen: Colombia','Producto: café verde','Incoterm: '+n,'Destino: '+PAIS.n]][i],
+ INFO=i=>'<small style="display:block;font-weight:400;font-size:11px;line-height:1.45;margin-top:3px">'+DI(i,INC[i]).slice(1).map(l=>l.startsWith('Incoterm')?'<span class="inc">'+l+'</span>':l).join('<br>')+'</small>';
+ $('pn').className='dg';$('pn').innerHTML=`<div class=ct>📋 Tu contrato es <span class=inc>${IN}</span> · el Incoterm de cada documento debe coincidir. Lee todo antes de aprobar. <button class=ins id=gh style="margin:0 0 0 8px">👁 Ver escritorio</button></div>`+TX.map((d,i)=>`<div class=doc data-i=${i}><i></i><b class=flag data-f=${i}>🚩</b><span>${D[i]}${INFO(i)}</span></div>`).join('')+'<div id=nx></div>';
+  const els=[...document.querySelectorAll('.doc')];$('gh').onpointerdown=e=>{e.stopPropagation();$('pn').classList.toggle('ghost')};els.forEach(e=>e.onpointerdown=()=>hold=+e.dataset.i);
+ document.querySelectorAll('.flag').forEach(b=>b.onpointerdown=e=>{e.stopPropagation();const i=+b.dataset.f;if(bl||fl[i]||pr[i]>=100)return;
+  if(mal.has(i)){fl[i]=1;sfx('correcto');ft('🚩 ¡Error detectado!','#2ecc71');hint('✅ '+D[i]+' decía '+TX[i].split('Incoterm ')[1]+' y tu contrato es '+IN+': todos los documentos deben coincidir con el Incoterm pactado.');pr[i]=100;els[i].classList.add('ok');els[i].firstChild.style.width='100%';els[i].lastChild.innerHTML=D[i]+INFO(i)+'<em class="sello er">🚩 ERROR DETECTADO</em>';ok++;fill('pg',ok/6);txt('pg','Documentos '+ok+'/6');if(ok==6)nxt('Generar Manifiesto →')}
+  else{sfx('error');bono-=50;reg('Marcaste como error un documento correcto',D[i]+' ya indicaba '+IN+', igual al contrato. Compara el Incoterm del documento con el del contrato antes de marcar 🚩.');ft('Ese documento era correcto: +$50','#e67e22');hint('❌ '+D[i]+' ya indicaba '+IN+', igual al contrato: no había error. Compara el Incoterm del documento con el del contrato antes de marcar 🚩.')}});
+ bars([['pg','Documentos 0/6']]);hint('Contrato: '+IN+'. Mantén presionado cada documento para aprobarlo; si su Incoterm NO coincide, márcalo con 🚩.');cam_(0,19,12,0,0,6);
+ return dt=>{const i=hold;if(!bl&&i>=0&&pr[i]<100){pr[i]=Math.min(100,pr[i]+85*DIF.doc*dt);els[i].firstChild.style.width=pr[i]+'%';
+   if(pr[i]>=100&&mal.has(i)){pr[i]=0;bl=1;els[i].lastChild.innerHTML=D[i]+INFO(i)+'<em class="sello er">✖ NO COINCIDE CON '+IN+'</em>';els[i].style.borderColor='#e74c3c';reg('Aprobaste un documento con error',D[i]+' indicaba '+TX[i].split('Incoterm ')[1]+' pero tu contrato es '+IN+'. Un documento que contradice el contrato puede bloquear el despacho o el pago.');ft('¡Aprobaste un documento con error!','#e74c3c');hint('Error: '+D[i]+' indicaba '+TX[i].split('Incoterm ')[1]+' pero tu contrato es '+IN+'. Aprobar un documento que no coincide puede frenar la carga en la aduana.');return setTimeout(perder,6500)}
+   if(pr[i]>=100){sfx('correcto');els[i].classList.add('ok');els[i].lastChild.innerHTML=D[i]+INFO(i)+'<em class="sello ok">✔ APROBADO</em>';hint('✅ '+D[i]+': el Incoterm ('+IN+') coincide con el contrato. Aprobado correctamente.');
+    const g=new T.Group();box(g,4,.1,5.4,0xffffff,0,0,0);{const hj=hoja(3.7,5,DI(i,INC[i]),128);hj.position.y=.066;g.add(hj)}box(g,1,.14,1,0xc0392b,1,0,1.4);
     g.position.set((i%3-1)*5.6,7,(i<3?-1:1)*3.2);g.rotation.y=rnd(-.25,.25);sc.add(g);pp.push(g);ok++;fill('pg',ok/6);txt('pg','Documentos '+ok+'/6');if(ok==6)nxt('Generar Manifiesto →')}}
   pp.forEach(g=>g.position.y+=(.1-g.position.y)*Math.min(1,8*dt))}}
 // ---------- ETAPA 4: ADUANA ORIGEN ----------
@@ -375,16 +516,16 @@ function s3(){sc=escena(0xc8dce6);box(sc,80,.4,50,0x7f8c8d,0,-.2,0);const g=new 
  for(let i=-4;i<=4;i++)box(g,.14,4.2,4.7,0x185a85,i,0,0);box(g,.3,4.6,4.6,0x154c70,4.5,0,0);
  const pc=[],sx=[-3.2,-1.1,1.1,3.2,0];let n=0;for(let i=0;i<5;i++){const m=ico(g,.5,0xc0392b,sx[i],rnd(-1.4,1.4),i<3?2.5:-2.5);m.scale.setScalar(1.1);pc.push(m)}
  let xr_=0,its=[],found=0,NA=1+(DIF.s>2?1:0)+(DIF.s>4?1:0),tleft=0,TL=28/Math.sqrt(DIF.ro),beam=null;
- function lane(){if(Math.random()<.6-.06*DIF.s){ft('🟢 Carril VERDE: pasa sin inspección','#2ecc71');hint('Carril verde: tu carga pasa sin inspección.');nxt('Aprobado →')}else{ft('🔴 Carril ROJO: inspección con rayos X','#e74c3c');xr()}}
+ function lane(){if(Math.random()<.6-.06*DIF.s){ft('🟢 Carril VERDE: pasa sin inspección','#2ecc71');hint('Carril verde: el sistema de riesgo de la aduana clasificó tu carga como de bajo riesgo (documentos coherentes y precintos intactos), por eso no se abre.');nxt('Aprobado →')}else{ft('🔴 Carril ROJO: inspección con rayos X','#e74c3c');xr()}}
  function xr(){xr_=1;tleft=TL;const body=g.children[0];body.material=new T.MeshStandardMaterial({color:0x1e6496,transparent:true,opacity:.2,depthWrite:false});
   g.children.forEach((c,i)=>{if(i>0&&c.geometry&&c.geometry.type=='BoxGeometry')c.visible=false});pc.forEach(m=>m.visible=false);
   const cs=[];for(const x of[-3.2,-1.1,1.1,3.2])for(const y of[-.9,.9])for(const z of[-1,1])cs.push([x,y,z]);cs.sort(()=>Math.random()-.5);
   its=cs.slice(0,10).map((c,i)=>{const it=new T.Group();it.isItem=1;it.an=i<NA;if(it.an)box(it,.95,.95,.95,0xc0392b,0,0,0);else{const q=saco();q.scale.setScalar(.85);it.add(q)}it.position.set(c[0],c[1],c[2]);g.add(it);return it});
   beam=new T.Mesh(new T.BoxGeometry(.12,4.6,4.6),new T.MeshBasicMaterial({color:0x2ecc71,transparent:true,opacity:.35}));g.add(beam);
-  bars([['pg','Cajas sospechosas 0/'+NA],['tm','Tiempo de escaneo']]);fill('tm',1);hint('RAYOS X: encuentra y toca la(s) caja(s) roja(s) sospechosa(s). Cada falsa alarma suma $75. Gira con ← →.')}
+  bars([['pg','Cajas sospechosas 0/'+NA],['tm','Tiempo de escaneo']]);fill('tm',1);hint('Carril rojo (por análisis de riesgo o selección aleatoria). RAYOS X: encuentra y toca la(s) caja(s) roja(s) sospechosa(s). Cada falsa alarma suma $75. Gira con ← →.')}
  function xclk(r){const h=r.intersectObjects(its,true)[0];if(!h)return;let o=h.object;while(o&&!o.isItem)o=o.parent;if(!o||o.done)return;o.done=1;
-  if(o.an){o.traverse(c=>{if(c.isMesh)c.material=new T.MeshBasicMaterial({color:0x2ecc71})});sfx('correcto');found++;fill('pg',found/NA);txt('pg','Cajas sospechosas '+found+'/'+NA);if(found==NA){xr_=0;beam.visible=false;ft('✅ Inspección superada','#2ecc71');nxt('Aprobado →')}}
-  else{o.traverse(c=>{if(c.isMesh)c.material=new T.MeshBasicMaterial({color:0xf39c12})});sfx('error');bono-=75;shake=.4;ft('Falsa alarma: +$75','#e67e22')}}
+  if(o.an){o.traverse(c=>{if(c.isMesh)c.material=new T.MeshBasicMaterial({color:0x2ecc71})});sfx('correcto');hint('✅ Anomalía real: una caja densa y uniforme entre sacos de café no coincide con la carga declarada; la aduana la abriría para verificarla.');found++;fill('pg',found/NA);txt('pg','Cajas sospechosas '+found+'/'+NA);if(found==NA){xr_=0;beam.visible=false;ft('✅ Inspección superada','#2ecc71');nxt('Aprobado →')}}
+  else{o.traverse(c=>{if(c.isMesh)c.material=new T.MeshBasicMaterial({color:0xf39c12})});sfx('error');bono-=75;shake=.4;reg('Falsa alarma en rayos X','Marcaste un saco normal como sospechoso. Busca bultos cuya forma o densidad no coincida con el resto del cargamento.');ft('Falsa alarma: +$75','#e67e22');hint('❌ Esa carga era normal: un saco de café con la forma y densidad esperadas. Busca bultos que no se parezcan al resto.')}}
  bars([['pg','Precintos 0/5']]);hint('Clic en los 5 precintos rojos. Gira el contenedor con ← →.');
  clickH=r=>{if(xr_)return xclk(r);const h=r.intersectObjects(pc.filter(p=>!p.ok))[0];if(h){h.object.ok=1;h.object.material=mat(0x27ae60);sfx('click');n++;fill('pg',n/5);txt('pg','Precintos '+n+'/5');if(n==5)lane()}};
  cam_(0,6,15,0,3,0);return dt=>{g.rotation.y+=(.25*DIF.ro+((RT()?1:0)-(LF()?1:0))*1.8)*dt;if(xr_){tleft-=dt;fill('tm',tleft/TL);beam.position.x=Math.sin(performance.now()/450)*4.3;if(tleft<=0){xr_=0;ft('⏱ Tiempo agotado','#e74c3c');perder()}}}}
@@ -442,6 +583,7 @@ function s5(){sc=escena(0xb4becb,160);const E=ENT(),EC=E.c,TD=11.75,CY=11.4,cab=
   ENG=.12+Math.min(.5,(Math.abs(vx)+Math.abs(hv)*3)/14);cam_(cx*.3,9,31,cx*.3,5.5,0)}}
 // ---------- ETAPA 8: ADUANA DESTINO ----------
 function s7(){sc=escena(0xefe6d2);box(sc,26,1,20,0x8d6e4f,0,-.5,0);box(sc,12,.2,16,0xffffff,0,.1,0);
+ {const hj=hoja(12,16,['DECLARACIÓN DE IMPORTACIÓN','País destino: '+PAIS.n,'Autoridad: '+PAIS.nm,'Producto: café verde '+CAF.n,'Partida: 0901.11.00','Origen: Colombia','Incoterm: '+INCO[CI].n,'Peso neto: 18.000 kg','Humedad máx.: '+(+([12.5,13,12,12.5,12,11.5][Math.max(0,PAISES.indexOf(PAIS))]+CAF.h).toFixed(1))+' %','Contenedor: CMAU '+(1000000+Math.floor(rnd(0,8999999))),'Llegada: 14/11','Valor: US$ '+COSTOS[0].toLocaleString('es-CO'),'Estado: EN INSPECCIÓN'],64);hj.position.set(0,.215,0);sc.add(hj)}
  const g=new T.Group();cyl(g,1.5,1.7,.5,0xc0392b,0,.4,0);cyl(g,.5,.5,1.2,0x7b241c,0,1.3,0);sc.add(g);
  let x=0,z=0,vx=6*DIF.sl,vz=6*DIF.sl,n=0,t=0;bars([['pg','Sellos 0/3']]);let ph=0,fails=0,lock=0;const MX=+([12.5,13,12,12.5,12,11.5][Math.max(0,PAISES.indexOf(PAIS))]+CAF.h).toFixed(1);g.visible=false;
  const lote=()=>'CV-'+(4000+Math.floor(rnd(0,999))),
@@ -460,8 +602,8 @@ function s7(){sc=escena(0xefe6d2);box(sc,26,1,20,0x8d6e4f,0,-.5,0);box(sc,12,.2,
  const fin=(i,w)=>{dn[i]=1;const k=dn.filter(Boolean).length;fill('pg',k/ls.length);txt('pg','Puntos revisados '+k+'/'+ls.length);if(k==ls.length)setTimeout(()=>{if(st!='PLAY'||g.parent!==sc)return;ph=1;g.visible=true;$('pn').innerHTML='<div id=nx></div>';bars([['pg','Sellos 0/3']]);hint('Atrapa el sello móvil con clic (0/3).')},w?3500:0)};
  document.querySelectorAll('.ins').forEach(b=>b.onpointerdown=e=>{e.stopPropagation();const i=+b.dataset.i,v=b.dataset.v,row=b.parentNode,ok=ls[i][1];if(dn[i]||lock)return;
   if(v=='L'){bono-=80;sfx('click');ft('🔬 Laboratorio: '+(ok?'cumple':'NO cumple')+' (+$80)','#3498db');row.parentNode.classList.add('ok');row.innerHTML=(ok?'🔬 Cumple (lab)':'🔬 No cumple (lab)')+W(i);return fin(i,1)}
-  if((v=='1')!=ok){fails++;sfx('error');shake=.4;row.parentNode.style.borderColor='#e74c3c';row.innerHTML=(ok?'✅ Sí cumplía':'🚫 No cumplía')+W(i);hint('Error de inspección: '+ls[i][2]);if(fails>=2){lock=1;ft('Segundo error: carga retenida','#e74c3c');return setTimeout(perder,4500)}bono-=150;ft('Error de inspección: multa +$150 (1/2)','#e74c3c');return fin(i,1)}
-  sfx('correcto');row.parentNode.classList.add('ok');row.innerHTML=ok?'✅ Cumple':'🚫 No cumple (bien rechazado)';fin(i)});
+  if((v=='1')!=ok){fails++;sfx('error');shake=.4;row.parentNode.style.borderColor='#e74c3c';row.innerHTML=(ok?'✅ Sí cumplía':'🚫 No cumplía')+W(i);reg('Inspección sanitaria: '+ls[i][0],ls[i][2]);hint('Error de inspección: '+ls[i][2]);if(fails>=2){lock=1;ft('Segundo error: carga retenida','#e74c3c');return setTimeout(perder,4500)}bono-=150;ft('Error de inspección: multa +$150 (1/2)','#e74c3c');return fin(i,1)}
+  sfx('correcto');row.parentNode.classList.add('ok');row.innerHTML=(ok?'✅ Cumple':'🚫 No cumple (bien rechazado)')+W(i);fin(i)});
  clickH=r=>{if(n>=3||!ph)return;if(r.intersectObject(g,true).length){n++;sfx('click');const m=cyl(sc,1.4,1.4,.05,0xc85050,x,.25,z,14);m.material=new T.MeshStandardMaterial({color:0xc85050,flatShading:true});
    vx=(Math.abs(vx)+3.5)*Math.sign(vx);vz=(Math.abs(vz)+3.5)*Math.sign(vz);fill('pg',n/3);txt('pg','Sellos '+n+'/3');hint(`Atrapa el sello móvil con clic (${n}/3).`);if(n>=3){g.visible=false;nxt('Levante →')}}};
  cam_(0,20,11,0,0,1);return dt=>{if(!ph)return;if(n>=3)return;t+=dt;x+=vx*dt;z+=vz*dt;if(x<=-4.5||x>=4.5)vx*=-1;if(z<=-6.2||z>=6.2)vz*=-1;x=Math.max(-4.5,Math.min(4.5,x));z=Math.max(-6.2,Math.min(6.2,z));g.position.set(x,.5+Math.sin(t*6)*.1,z);g.rotation.y+=2*dt}}
@@ -563,8 +705,12 @@ function cargar(){st='CINE';$('hud').style.display='none';ov('');const e=etapa,a
  setTimeout(()=>{fd.style.opacity=1;cp.style.opacity=0},(D-.7)*1000);
  setTimeout(()=>{a.style.height=b.style.height='0';ENG=0;cargarMapa();fd.style.opacity=0},D*1000)}
 // ---------- bucle ----------
-function loop(){requestAnimationFrame(loop);const _rw=clk.getDelta(),dt=Math.min(_rw,.05);adapt(_rw);if(st=='PLAY'||st=='MENU'||st=='CINE')upd(dt);FX.forEach(f=>f(dt));pupd(dt);aud();
+function loop(){requestAnimationFrame(loop);const _rw=clk.getDelta(),dt=Math.min(_rw,.05);adapt(_rw);if(!PAUSA){if(st=='PLAY'||st=='MENU'||st=='CINE')upd(dt);FX.forEach(f=>f(dt));pupd(dt);aud()}
  const k=1-Math.exp(-5*dt);cam.position.lerp(camP,k);cl.lerp(camL,k);cam.lookAt(cl);
  const sx=shake>0?(Math.random()-.5)*shake*2.4:0,sy=shake>0?(Math.random()-.5)*shake*2.4:0;shake=Math.max(0,shake-dt);cam.position.x+=sx;cam.position.y+=sy;RN.render(sc,cam);cam.position.x-=sx;cam.position.y-=sy}
-menu();loop();
+menu();loop();{const c=$('carga');c.style.opacity=0;setTimeout(()=>c.remove(),500)}
+// Modo capturas: abre index.html?etapa=N (1-9) y opcionalmente &pais=0-5 &cafe=0-2 para ir directo a esa etapa
+(()=>{const q=new URLSearchParams(location.search),e=parseInt(q.get('etapa'));if(!(e>=1&&e<=9))return;NV=PAISES.length-1;
+ pick(Math.min(Math.max(+q.get('pais')||0,0),PAISES.length-1));cv(Math.min(Math.max(+q.get('cafe')||0,0),CAFES.length-1));
+ infoE=-1;qs=BANCO.slice();qi=0;bono=0;vidas=3;perdidas=0;perdidasV=0;LOG=[];FALLOS={};aciertos=0;preg=0;t0=performance.now();etapa=e-1;empezar()})();
 </script></body></html>
